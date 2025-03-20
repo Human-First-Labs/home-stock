@@ -2,20 +2,19 @@
 	import { onMount, type Snippet } from 'svelte';
 	import { invalidate } from '$app/navigation';
 	import { Turnstile } from 'svelte-turnstile';
-	import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
+
+	import Cover from '$lib/toolkit/Cover.svelte';
+	import type { Session, SupabaseClient } from '@supabase/supabase-js';
 
 	let {
-		data,
+		session,
+		supabase,
 		children
 	}: {
+		session: Session | null;
+		supabase: SupabaseClient<any, 'public', any>;
 		children: Snippet;
-		data: {
-			session: Session | null;
-			supabase: SupabaseClient<any, 'public', any>;
-			user: User | null;
-		};
 	} = $props();
-	let { session, supabase } = $derived(data);
 
 	const VITE_TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
@@ -71,70 +70,22 @@
 	};
 </script>
 
-<svelte:head>
-	<meta name="description" content="A Web Application for Shareiety" />
-</svelte:head>
-
 {#if !session}
-	<div class="cover">
+	<Cover>
 		<div class="popup">
 			<h2>Sorry about this!</h2>
 			<h4>Just making sure you're not a bot</h4>
 			<small>You know how it is these days :(</small>
 			<Turnstile siteKey={VITE_TURNSTILE_SITE_KEY} on:callback={tokenGetter} />
 		</div>
-	</div>
-{:else}
-	<div class="app">
-		<main>
-			{@render children()}
-		</main>
-	</div>
+	</Cover>
 {/if}
+{@render children()}
 
 <style>
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-		max-width: 64rem;
-		margin: 0;
-		box-sizing: border-box;
-	}
-
-	h2 {
-		font-size: 1.5rem;
-		font-weight: 600;
-		margin: 0;
-	}
-	h4 {
-		font-size: 1.25rem;
-		font-weight: 500;
-		margin: 0;
-	}
-	.cover {
-		display: flex;
-		flex-direction: column;
-		height: 100vh;
-		width: 100vw;
-		justify-content: center;
-		align-items: center;
-		position: absolute;
-		z-index: 5;
-		top: 0;
-		left: 0;
-		background-color: rgba(0, 0, 0, 0.5);
-	}
 	.popup {
 		display: flex;
-		background-color: white;
+		background-color: var(--primary-color);
 		align-items: center;
 		flex-direction: column;
 		border-radius: 16px;
@@ -143,5 +94,11 @@
 		box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 		text-align: center;
 		gap: 20px;
+	}
+
+	h2,
+	h4,
+	small {
+		margin: 0;
 	}
 </style>

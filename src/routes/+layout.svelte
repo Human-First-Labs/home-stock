@@ -1,20 +1,22 @@
 <script lang="ts">
-	// import SupabaseLayout from "$lib/supabase/SupabaseLayout.svelte";
-	import type { LayoutProps } from "./$types";
-	import '../app.css';
+	import SupabaseLayout from '$lib/supabase/SupabaseLayout.svelte';
+	import type { LayoutProps } from './$types';
+	import '../lib/toolkit/default-hfl.css';
+	import Footer from '$lib/Footer.svelte';
 
-	const appName = "Shareiety";
+	const appName = 'HomeStock';
 
-    let { children, 
-	// ...restOfProps 
-	}: LayoutProps = $props()
+	let { children, data }: LayoutProps = $props();
+	const { supabaseData } = $derived(data);
+	const { session, supabase } = $derived(supabaseData);
 </script>
 
 <svelte:head>
 	<title>{appName}</title>
-	<meta name="description" content="The Shareiety Web App" />
+	<meta name="description" content={`The ${appName} Web App`} />
 </svelte:head>
 
-<!-- <SupabaseLayout {...restOfProps}> -->
+<SupabaseLayout {session} {supabase}>
 	{@render children()}
-<!-- </SupabaseLayout> -->
+	<Footer />
+</SupabaseLayout>
