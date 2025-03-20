@@ -89,14 +89,14 @@
 <div class="section primary">
 	<div class="section-content">
 		<h1 class="contrast-text">HomeStock</h1>
-		<div class="row">
+		<div class="row gapping">
 			<div class="column half-1">
 				<div>
 					<p class="big-text contrast-text">Waste Less</p>
 					<p class="big-text contrast-text">Have More</p>
 				</div>
 				<h3 class="contrast-text">Know what you have at home, and always buy just what you need</h3>
-				<a href="/app">
+				<a class="hfl-a" href="/app">
 					<button class="hfl-button bigger-button"> Get started </button>
 				</a>
 			</div>
@@ -188,12 +188,15 @@
 	}
 
 	.half-1 {
-		width: 50%;
+		flex: 1;
 		justify-content: space-between;
+		min-width: 300px;
 	}
 	.half-2 {
-		width: 50%;
+		flex: 1;
+
 		height: 400px;
+		min-width: 300px;
 	}
 	.primary {
 		background-color: var(--primary-color);
@@ -217,7 +220,7 @@
 	}
 
 	.big-text {
-		font-size: 5em;
+		font-size: 3em;
 		font-weight: bold;
 		line-height: 1px;
 	}
@@ -232,6 +235,17 @@
 	}
 
 	.half {
-		width: 50%;
+		flex: 1;
+		min-width: 300px;
+	}
+
+	.feature-row {
+		align-items: center;
+	}
+
+	@media screen and (min-width: 1190px) {
+		.big-text {
+			font-size: 5em;
+		}
 	}
 </style>

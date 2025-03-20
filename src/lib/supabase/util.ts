@@ -2,7 +2,6 @@ import { isBrowser, createBrowserClient, createServerClient } from '@supabase/ss
 import type { Handle, HandleFetch } from '@sveltejs/kit';
 
 interface DataArguments {
-	depends: (...deps: Array<`${string}:${string}`>) => void;
 	fetch: {
 		(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 		(input: string | URL | globalThis.Request, init?: RequestInit): Promise<Response>;
@@ -16,13 +15,9 @@ interface DataArguments {
 }
 
 export const layoutLoad = async (args: DataArguments) => {
-	const { depends, fetch, cookies, supabaseUrl, supabaseApiKey } = args;
+	const { fetch, cookies, supabaseUrl, supabaseApiKey } = args;
 
-	/**
-	 * Declare a dependency so the layout can be invalidated, for example, on
-	 * session refresh.
-	 */
-	depends('supabase:auth');
+
 
 	const supabase = isBrowser()
 		? createBrowserClient(supabaseUrl, supabaseApiKey, {
