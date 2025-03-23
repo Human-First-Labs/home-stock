@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
 
 	const { data }: PageProps = $props();
+	const { supabaseData } = $derived(data);
 
 	const logout = async () => {
-		const { error } = await data.supabaseData.supabase.auth.signOut();
+		goto('/');
+		const { error } = await supabaseData.supabase.auth.signOut();
 		if (error) {
 			console.error('Error logging out:', error.message);
 		}

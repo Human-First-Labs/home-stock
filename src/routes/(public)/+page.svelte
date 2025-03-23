@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
+	import { inView } from '$lib/toolkit/actions/onInView.svelte';
+	import { onMount } from 'svelte';
+	import { fly, slide } from 'svelte/transition';
 
 	let expandedFeature = $state<string>('');
 
@@ -9,6 +11,11 @@
 		description: string;
 		notes?: string[];
 	}
+
+	let ready1 = $state(false);
+	let ready2 = $state(false);
+
+	onMount(() => (ready1 = true));
 
 	const currentFeatures: Feature[] = [
 		{
@@ -78,7 +85,7 @@
 			name: 'Fully Offline Mode',
 			extract: 'Use the app without an internet connection',
 			description:
-				'Switching to Fully Offline will donwload all your data to your device, and you will be able to use the app without an internet connection, and without any data being sent to the server*. This mode is ideal for users who are concerned about their privacy.',
+				'Switching to Fully Offline will download all your data to your device, and you will be able to use the app without an internet connection, and without any data being sent to the server*. This mode is ideal for users who are concerned about their privacy.',
 			notes: [
 				'*Some features may require an internet connection, and will ask for your permission to send data to the server in this mode.'
 			]
@@ -87,94 +94,117 @@
 </script>
 
 <div class="section primary">
-	<div class="section-content">
-		<h1 class="contrast-text">HomeStock</h1>
-		<div class="row gapping">
-			<div class="column half-1">
-				<div>
-					<p class="big-text contrast-text">Waste Less</p>
-					<p class="big-text contrast-text">Have More</p>
+	{#if ready1}
+		<div class="section-content" in:fly={{ x: -100, duration: 500 }}>
+			<h1 class="contrast-text">HomeStock</h1>
+			<div class="row gapping">
+				<div class="column half-1">
+					<div>
+						<p class="big-text contrast-text">Waste Less</p>
+						<p class="big-text contrast-text">Have More</p>
+					</div>
+					<h3 class="contrast-text">
+						Know what you have at home, and always buy just what you need
+					</h3>
+					<a class="hfl-a" href="/app">
+						<button class="hfl-button bigger-button"> Get started </button>
+					</a>
 				</div>
-				<h3 class="contrast-text">Know what you have at home, and always buy just what you need</h3>
-				<a class="hfl-a" href="/app">
-					<button class="hfl-button bigger-button"> Get started </button>
-				</a>
-			</div>
-			<div class="column half-2">
-				<img src="/placeholder-image.jpg" alt="Shopping App" />
+				<div class="column half-2">
+					<!-- <img src="/placeholder-image.jpg" alt="Shopping App" /> -->
+				</div>
 			</div>
 		</div>
-	</div>
+	{/if}
 </div>
 <div class="section">
 	<div class="section-content-2">
-		<div class="row gapping">
-			<div class="column half">
-				<h2>Features</h2>
-				{#each currentFeatures as point}
-					<div class="column feature-row">
-						<div class="row feature-row">
-							<div class="feature-name">
-								<h4>{point.name}</h4>
-								<h5>{point.extract}</h5>
+		<div
+			class="content-2-marker"
+			use:inView={{
+				callbackFunction: () => {
+					ready2 = true;
+				},
+				revertFunction: () => {
+					ready2 = false;
+				}
+			}}
+		></div>
+		{#if ready2}
+			<div
+				class="row gapping"
+				in:fly={{ y: -100, duration: 500 }}
+				out:fly={{ y: -100, duration: 500 }}
+			>
+				<div class="column half">
+					<h2>Features</h2>
+					{#each currentFeatures as point}
+						<div class="column feature-row">
+							<div class="row feature-row">
+								<div class="feature-name">
+									<h4>{point.name}</h4>
+									<h5>{point.extract}</h5>
+								</div>
+
+								<button
+									class="hidden-button"
+									onclick={() =>
+										(expandedFeature = expandedFeature === point.name ? '' : point.name)}
+								>
+									{expandedFeature === point.name ? 'Show Less' : 'Show More'}
+								</button>
 							</div>
 
-							<button
-								class="hidden-button"
-								onclick={() => (expandedFeature = expandedFeature === point.name ? '' : point.name)}
-							>
-								{expandedFeature === point.name ? 'Show Less' : 'Show More'}
-							</button>
+							{#if expandedFeature === point.name}
+								<div class="column" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
+									<p>{point.description}</p>
+									{#if point.notes}
+										{#each point.notes as note}
+											<small>{note}</small>
+										{/each}
+									{/if}
+								</div>
+							{/if}
+							<hr class="hfl-hr" />
 						</div>
+					{/each}
+				</div>
 
-						{#if expandedFeature === point.name}
-							<div class="column" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
-								<p>{point.description}</p>
-								{#if point.notes}
-									{#each point.notes as note}
-										<small>{note}</small>
-									{/each}
-								{/if}
-							</div>
-						{/if}
-						<hr class="hfl-hr" />
-					</div>
-				{/each}
-			</div>
+				<div class="column half">
+					<h2>Upcoming Features</h2>
+					{#each upcomingFeatures as point}
+						<div class="column feature-row">
+							<div class="row feature-row">
+								<div class="feature-name">
+									<h4>{point.name}</h4>
+									<h5>{point.extract}</h5>
+								</div>
 
-			<div class="column half">
-				<h2>Upcoming Features</h2>
-				{#each upcomingFeatures as point}
-					<div class="column feature-row">
-						<div class="row feature-row">
-							<div class="feature-name">
-								<h4>{point.name}</h4>
-								<h5>{point.extract}</h5>
+								<button
+									class="hidden-button"
+									onclick={() =>
+										(expandedFeature = expandedFeature === point.name ? '' : point.name)}
+								>
+									{expandedFeature === point.name ? 'Show Less' : 'Show More'}
+								</button>
 							</div>
 
-							<button
-								class="hidden-button"
-								onclick={() => (expandedFeature = expandedFeature === point.name ? '' : point.name)}
-							>
-								{expandedFeature === point.name ? 'Show Less' : 'Show More'}
-							</button>
+							{#if expandedFeature === point.name}
+								<div class="column" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
+									<p>{point.description}</p>
+									{#if point.notes}
+										{#each point.notes as note}
+											<small>{note}</small>
+										{/each}
+									{/if}
+								</div>
+							{/if}
+							<hr class="hfl-hr" />
 						</div>
-
-						{#if expandedFeature === point.name}
-							<div class="column" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
-								<p>{point.description}</p>
-								{#if point.notes}
-									{#each point.notes as note}
-										<small>{note}</small>
-									{/each}
-								{/if}
-							</div>
-						{/if}
-						<hr class="hfl-hr" />
-					</div>
-				{/each}
+					{/each}
+				</div>
 			</div>
-		</div>
+		{/if}
 	</div>
 </div>
 
@@ -210,6 +240,7 @@
 		width: 100%;
 		display: flex;
 		padding: 50px 0;
+		position: relative;
 	}
 	.section-content {
 		width: 80%;
@@ -217,6 +248,7 @@
 	.section-content-2 {
 		width: 100%;
 		padding: 0 10%;
+		min-height: 400px;
 	}
 
 	.big-text {
@@ -241,6 +273,13 @@
 
 	.feature-row {
 		align-items: center;
+	}
+
+	.content-2-marker {
+		position: absolute;
+		top: 300px;
+		width: 10px;
+		height: 10px;
 	}
 
 	@media screen and (min-width: 1190px) {

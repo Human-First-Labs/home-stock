@@ -13,7 +13,18 @@ export const load = async ({ data, depends, fetch }) => {
 
   const apiService = userService(fetch);
 
-  const result = await apiService.getUser();
+  let user
+
+  if (data.session) {
+    try {
+      const result = await apiService.getUser();
+
+      user = result.user
+    } catch (e) {
+      console.error(e)
+
+    }
+  }
 
   const supabaseLayoutLoad = await layoutLoad({
     cookies: data.cookies,
@@ -24,6 +35,6 @@ export const load = async ({ data, depends, fetch }) => {
 
   return {
     supabaseData: supabaseLayoutLoad,
-    user: result.user,
+    user,
   };
 };

@@ -42,9 +42,16 @@ body {
 .hfl-field {
 	display: flex;
 	padding: 0.5rem;
-	border: 1px solid var(--text-color);
+	border: 1px solid var(--primary-contrast-color);
+	background-color: var(--primary-contrast-color);
+	color: var(--text-color);
 	border-radius: 0.25rem;
-	background-color: transparent;
+	outline: none;
+	width: 100%;
+}
+
+.hfl-field::placeholder {
+	color: var(--text-color);
 }
 
 * {

@@ -3,6 +3,7 @@
 	import Cover from '../toolkit/Cover.svelte';
 	import { Turnstile } from 'svelte-turnstile';
 	import { page } from '$app/state';
+	import { goto, invalidateAll } from '$app/navigation';
 
 	let {
 		supabase
@@ -24,7 +25,7 @@
 			email: email.value,
 			options: {
 				captchaToken: token,
-				emailRedirectTo: page.url.href
+				emailRedirectTo: page.url.origin + '/app'
 			}
 		});
 		if (error) {
@@ -43,6 +44,12 @@
 		<h2>Login to HomeStock</h2>
 		{#if status === 'email-sent'}
 			<h4>An email has been sent to you with a link to login</h4>
+			<button
+				class="hfl-button bigger"
+				onclick={() => {
+					invalidateAll();
+				}}>Continue</button
+			>
 		{:else}
 			<h4>Login with your email below, so we know what is yours and what isn't!</h4>
 			<input
@@ -52,22 +59,46 @@
 				name="emailAddress"
 				required
 			/>
-			<Turnstile siteKey={VITE_TURNSTILE_SITE_KEY} on:callback={tokenGetter} />
-			{#if token !== null}
+			<div class="container">
+				<Turnstile siteKey={VITE_TURNSTILE_SITE_KEY} on:callback={tokenGetter} />
+			</div>
+			<div class="row action-rows">
+				<button
+					class="hfl-button bigger"
+					onclick={() => {
+						goto('/');
+					}}>Cancel</button
+				>
 				<button
 					class="hfl-button bigger"
 					onclick={() => {
 						login(token!);
 					}}>Login</button
 				>
-			{/if}
+			</div>
 		{/if}
 	</div>
 </Cover>
 
 <style>
+	h4 {
+		margin: 0;
+	}
+
+	.popup {
+		min-width: 340px;
+		gap: 20px;
+	}
+
 	.bigger {
 		font-size: 1.5rem;
 		padding: 10px 20px;
+	}
+
+	.action-rows {
+		gap: 10px;
+		display: flex;
+		justify-content: space-around;
+		width: 100%;
 	}
 </style>
