@@ -2,7 +2,7 @@
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { fly } from 'svelte/transition';
 
-	interface Props {
+	export interface NotificationProps {
 		/** Whats inside the box */
 		children: Snippet;
 		/** Boxes position*/
@@ -13,7 +13,7 @@
 		onEnd?: () => void;
 	}
 
-	const { children, position, period, onEnd }: Props = $props();
+	const { children, position, period, onEnd }: NotificationProps = $props();
 
 	let flyInOptions = $derived.by(() => {
 		switch (position) {

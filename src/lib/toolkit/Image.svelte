@@ -1,45 +1,82 @@
 <script lang="ts">
 	import defaultPlaceholder from './assets/placeholder-image.jpg';
-	import Spinner from './svgs/Spinner.svelte';
 
-	interface Props {
+	export interface ImageProps {
 		/** This is the string that will serve as a the source for this image*/
 		src: string;
 		/** This is the placeholder that will take the sources place if the source is an empty string or image fails*/
 		placeholderSrc?: string;
 		/** This is the string that will serve as alt information*/
 		alt: string;
+		/** Width and Height*/
+		width?: string;
+		height?: string;
+		borderRadius?: string;
 	}
-	const { src, placeholderSrc, alt }: Props = $props();
+	const { src, placeholderSrc, alt, width, height, borderRadius }: ImageProps = $props();
 
-	let loading = $state(src ? true : false);
+	// let loading = $state(src ? true : false);
 	let error = $state(src ? false : true);
 
-	const handleLoad = () => {
-		console.log('loaded!');
-		loading = false;
-		error = false;
-	};
+	// let ref: HTMLImageElement | undefined = $state();
+
+	// $effect(() => {
+	// 	if (ref?.complete) {
+	// 		handleLoad();
+	// 	}
+	// });
+
+	// const handleLoad = () => {
+	// 	loading = false;
+	// 	error = false;
+	// };
 
 	const handleError = () => {
-		console.log('!error');
+		// console.log('!error');
 		error = true;
-		loading = false;
+		// loading = false;
 	};
 </script>
 
-<div class={['image-container', `${loading}`]}>
+<div
+	class={[
+		'image-container'
+		// `${loading}`
+	]}
+	style={`border-radius: ${borderRadius};`}
+>
+	<!-- bind:this={ref}
+		onload={handleLoad} -->
 	<img
+		onerror={handleError}
 		{src}
 		{alt}
-		onload={handleLoad}
-		onerror={handleError}
+		width={width || '100%'}
+		height={height || '100%'}
 		class={[`${error ? 'actualImageError' : ''}`]}
+		style={`border-radius: ${borderRadius};`}
+		loading="lazy"
 	/>
-	{#if loading}
+	<!-- {#if loading}
 		<Spinner />
 	{:else if error}
-		<img src={placeholderSrc || defaultPlaceholder} {alt} class={[error]} />
+		<img
+			src={placeholderSrc || defaultPlaceholder}
+			{alt}
+			class={[error]}
+			width={width || '100%'}
+			height={height || '100%'}
+		/>
+	{/if} -->
+
+	{#if error}
+		<img
+			src={placeholderSrc || defaultPlaceholder}
+			{alt}
+			class={[error]}
+			width={width || '100%'}
+			height={height || '100%'}
+		/>
 	{/if}
 </div>
 
@@ -47,10 +84,14 @@
 	.image-container {
 		display: flex;
 		position: relative; /* For positioning the placeholder and spinner */
+		width: 100%;
+		height: 100%;
+		justify-content: center;
 	}
 
 	img {
 		object-fit: contain;
+		transition: all 0.3s ease;
 	}
 
 	.actualImageError {
@@ -58,10 +99,10 @@
 	}
 
 	.error {
-		border: var(--error-color) solid 1px;
+		border: 1px solid var(--error-color);
 	}
 
-	.loading {
+	/* .loading {
 		background-color: var(--background-color);
-	}
+	} */
 </style>

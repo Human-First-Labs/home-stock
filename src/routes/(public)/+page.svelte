@@ -47,13 +47,13 @@
 			extract: 'Remove data from the app',
 			description:
 				"We've made it easy to complete delete all your information from this app, in order to comply with data protection laws. You can delete all your data with a single click."
-		},
-		{
-			name: 'Part of the Human First Labs (HFL) ecosystem',
-			extract: 'Built with and by Human First Labs (HFL)',
-			description:
-				'This app is part of the Human First Labs (HFL) ecosystem, and has been built with the Human First Labs (HFL) principles in mind. For more information, visit the Human First Labs (HFL) website from the footer.'
 		}
+		// {
+		// 	name: 'Part of the Human First Labs (HFL) ecosystem',
+		// 	extract: 'Built with and by Human First Labs (HFL)',
+		// 	description:
+		// 		'This app is part of the Human First Labs (HFL) ecosystem, and has been built with the Human First Labs (HFL) principles in mind. For more information, visit the Human First Labs (HFL) website from the footer.'
+		// }
 	];
 
 	const upcomingFeatures: Feature[] = [
@@ -106,8 +106,8 @@
 					<h3 class="contrast-text">
 						Know what you have at home, and always buy just what you need
 					</h3>
-					<a class="hfl-a" href="/app">
-						<button class="hfl-button bigger-button"> Get started </button>
+					<a class="basic-a" href="/app">
+						<button class="basic-button bigger-button"> Get started </button>
 					</a>
 				</div>
 				<div class="column half-2">
@@ -135,73 +135,78 @@
 				class="row gapping"
 				in:fly={{ y: -100, duration: 500 }}
 				out:fly={{ y: -100, duration: 500 }}
+				style="align-items: flex-start;"
 			>
 				<div class="column half">
 					<h2>Features</h2>
-					{#each currentFeatures as point}
-						<div class="column feature-row">
-							<div class="row feature-row">
-								<div class="feature-name">
-									<h4>{point.name}</h4>
-									<h5>{point.extract}</h5>
+					<div>
+						{#each currentFeatures as point}
+							<div class="column feature-row">
+								<div class="row feature-row">
+									<div class="feature-name">
+										<h4>{point.name}</h4>
+										<h5>{point.extract}</h5>
+									</div>
+
+									<button
+										class="hidden-button"
+										onclick={() =>
+											(expandedFeature = expandedFeature === point.name ? '' : point.name)}
+									>
+										{expandedFeature === point.name ? 'Show Less' : 'Show More'}
+									</button>
 								</div>
 
-								<button
-									class="hidden-button"
-									onclick={() =>
-										(expandedFeature = expandedFeature === point.name ? '' : point.name)}
-								>
-									{expandedFeature === point.name ? 'Show Less' : 'Show More'}
-								</button>
+								{#if expandedFeature === point.name}
+									<div class="column" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
+										<p>{point.description}</p>
+										{#if point.notes}
+											{#each point.notes as note}
+												<small>{note}</small>
+											{/each}
+										{/if}
+									</div>
+								{/if}
+								<hr class="basic-hr" />
 							</div>
-
-							{#if expandedFeature === point.name}
-								<div class="column" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
-									<p>{point.description}</p>
-									{#if point.notes}
-										{#each point.notes as note}
-											<small>{note}</small>
-										{/each}
-									{/if}
-								</div>
-							{/if}
-							<hr class="hfl-hr" />
-						</div>
-					{/each}
+						{/each}
+					</div>
 				</div>
 
 				<div class="column half">
 					<h2>Upcoming Features</h2>
-					{#each upcomingFeatures as point}
-						<div class="column feature-row">
-							<div class="row feature-row">
-								<div class="feature-name">
-									<h4>{point.name}</h4>
-									<h5>{point.extract}</h5>
+					<div>
+						{#each upcomingFeatures as point}
+							<div class="column feature-row">
+								<div class="row feature-row">
+									<div class="feature-name">
+										<h4>{point.name}</h4>
+										<h5>{point.extract}</h5>
+									</div>
+
+									<button
+										class="hidden-button"
+										onclick={() =>
+											(expandedFeature = expandedFeature === point.name ? '' : point.name)}
+									>
+										{expandedFeature === point.name ? 'Show Less' : 'Show More'}
+									</button>
 								</div>
 
-								<button
-									class="hidden-button"
-									onclick={() =>
-										(expandedFeature = expandedFeature === point.name ? '' : point.name)}
-								>
-									{expandedFeature === point.name ? 'Show Less' : 'Show More'}
-								</button>
+								{#if expandedFeature === point.name}
+									<div class="column" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
+										<p>{point.description}</p>
+										{#if point.notes}
+											{#each point.notes as note}
+												<small>{note}</small>
+											{/each}
+										{/if}
+									</div>
+								{/if}
+								<hr class="basic-hr" />
 							</div>
-
-							{#if expandedFeature === point.name}
-								<div class="column" in:slide={{ duration: 500 }} out:slide={{ duration: 500 }}>
-									<p>{point.description}</p>
-									{#if point.notes}
-										{#each point.notes as note}
-											<small>{note}</small>
-										{/each}
-									{/if}
-								</div>
-							{/if}
-							<hr class="hfl-hr" />
-						</div>
-					{/each}
+						{/each}
+					</div>
 				</div>
 			</div>
 		{/if}
@@ -221,6 +226,7 @@
 		flex: 1;
 		justify-content: space-between;
 		min-width: 300px;
+		gap: 10px;
 	}
 	.half-2 {
 		flex: 1;
@@ -254,7 +260,6 @@
 	.big-text {
 		font-size: 3em;
 		font-weight: bold;
-		line-height: 1px;
 	}
 
 	.bigger-button {
@@ -269,6 +274,7 @@
 	.half {
 		flex: 1;
 		min-width: 300px;
+		gap: 20px;
 	}
 
 	.feature-row {

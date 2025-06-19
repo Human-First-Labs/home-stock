@@ -16,11 +16,11 @@
 
 <div class="section">
 	<div class="section-content">
-		<button class="hfl-button bigger"> Scan a Receipt </button>
-		<button class="hfl-button bigger"> Items </button>
-		<button class="hfl-button bigger"> Shopping Lists </button>
-		<hr class="hfl-hr" />
-		<button class="hfl-button bigger" onclick={logout}> Logout </button>
+		<button class="basic-button bigger"> Scan a Receipt </button>
+		<button class="basic-button bigger"> Items </button>
+		<button class="basic-button bigger"> Shopping Lists </button>
+		<hr class="basic-hr" />
+		<button class="basic-button bigger" onclick={logout}> Logout </button>
 	</div>
 </div>
 

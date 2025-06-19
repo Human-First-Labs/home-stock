@@ -1,3 +1,15 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+small {
+	margin: 0;
+	padding: 0;
+}
+
 :root {
 	--general-font: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	--primary-color: #4a90e2;
@@ -12,17 +24,30 @@
 	--success-color: green;
 }
 
+.normal-button {
+	background-color: var(--primary-color);
+	color: var(--primary-contrast-color);
+	padding: 10px 20px;
+	width: 100%;
+	border: 0;
+	border-radius: 5px;
+	justify-content: center;
+	cursor: pointer;
+}
+
 html,
 body {
 	margin: 0;
 	padding: 0;
-	height: 100%;
+	/* height: 100%; */
 	display: flex;
 	flex-direction: column;
+	color: var(--text-color);
 }
 
 .row {
 	display: flex;
+	align-items: center;
 	flex-direction: row;
 	flex-wrap: wrap;
 }
@@ -39,33 +64,33 @@ body {
 	display: flex;
 }
 
-.hfl-field {
-	display: flex;
-	padding: 0.5rem;
-	border: 1px solid var(--primary-contrast-color);
-	background-color: var(--primary-contrast-color);
-	color: var(--text-color);
-	border-radius: 0.25rem;
+.hidden-input {
+	background-color: transparent;
+	border: 0;
 	outline: none;
-	width: 100%;
+	display: flex;
 }
 
-.hfl-field::placeholder {
-	color: var(--text-color);
+.basic-field {
+	display: flex;
+	padding: 0.5rem;
+	border: 1px solid var(--text-color);
+	border-radius: 0.25rem;
+	background-color: transparent;
 }
 
 * {
+	scroll-behavior: smooth;
 	box-sizing: border-box;
 	font-family: var(--general-font);
+}
+
+.basic-a {
+	text-decoration: none;
 	color: var(--text-color);
 }
 
-.hfl-a {
-	color: var(--secondary-color) !important;
-	text-decoration: none;
-}
-
-.hfl-button {
+.basic-button {
 	cursor: pointer;
 	border: 0;
 	border-radius: 2em;
@@ -74,7 +99,7 @@ body {
 	display: flex;
 }
 
-.hfl-hr {
+.basic-hr {
 	width: 100%;
 	border: 0.2px solid var(--text-color);
 	margin: 15px 0 15px 0;
@@ -95,5 +120,74 @@ body {
 	& > h2,
 	h4 {
 		color: var(--primary-contrast-color);
+	}
+}
+
+.basic-input {
+	border: 1px solid var(--light-grey-background-color);
+	border-radius: 10px;
+	background-color: rgba(255, 255, 255, 0.2);
+	padding: 10px;
+	height: 44px;
+	gap: 10px;
+}
+
+.basic-textarea {
+	border: 1px solid var(--light-grey-background-color);
+	border-radius: 10px;
+	background-color: rgba(255, 255, 255, 0.2);
+	padding: 10px;
+	gap: 10px;
+}
+
+.cover {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	z-index: 9;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	border: none;
+	overflow: auto;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	background-color: var(--background-color);
+	box-shadow:
+		0 4px 8px 0 rgba(0, 0, 0, 0.2),
+		0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	border-radius: 16px;
+	padding: 10px;
+}
+
+.computer-only-row {
+	display: flex;
+	flex-direction: row;
+}
+
+input {
+	min-width: 0;
+}
+
+@media screen and (min-width: 1000px) {
+	.hidden-on-computer {
+		display: none !important;
+	}
+}
+
+@media screen and (max-width: 1000px) {
+	.hidden-on-mobile {
+		display: none !important;
+	}
+	.computer-only-row {
+		flex-direction: column;
+		align-items: center;
 	}
 }

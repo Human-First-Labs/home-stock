@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { browser } from '$app/environment';
 
 	interface Position {
@@ -8,6 +8,7 @@
 		left?: number;
 		right?: number;
 	}
+
 	type TargetDivPosition =
 		| 'top'
 		| 'top-end'
@@ -21,6 +22,7 @@
 		| 'left'
 		| 'left-start'
 		| 'top-start';
+
 	const targetDivPositions: TargetDivPosition[] = [
 		'top',
 		'top-end',
@@ -36,7 +38,7 @@
 		'top-start'
 	];
 
-	interface Props {
+	export interface TargetDivProps {
 		/** This is just the text */
 		children: Snippet;
 		/** What the button does*/
@@ -44,7 +46,7 @@
 		/** Anchor Element*/
 		anchor: HTMLElement;
 		/**Match Parent Width */
-		matchParentWidth?: boolean;
+		matchParentWidth?: 'exact' | 'at-least';
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -53,20 +55,19 @@
 		children,
 		preferredPosition = 'bottom-start',
 		anchor,
-		matchParentWidth = true
-	}: Props = $props();
+		matchParentWidth
+	}: TargetDivProps = $props();
 
 	let position = $state<Position | null>(null);
-	let checked = $state(false);
 	let ref: HTMLDivElement;
 
-	const targetSizeInfo = anchor.getBoundingClientRect();
+	const targetSizeInfo = anchor?.getBoundingClientRect();
 
 	const convertPositionToValues = (
 		targetSizeInfo: DOMRect,
 		mySizeInfo: DOMRect,
 		renderPosition: TargetDivPosition
-	) => {
+	): Position => {
 		const newPosition: Position = {};
 		const childWidth = mySizeInfo.width;
 		const childHeight = mySizeInfo.height;
@@ -122,7 +123,12 @@
 				newPosition.top = targetSizeInfo.top + targetSizeInfo.height / 2 - childHeight / 2;
 			}
 		}
-		return newPosition;
+		return {
+			top: newPosition.top && newPosition.top <= 0 ? 0 : newPosition.top,
+			bottom: newPosition.bottom && newPosition.bottom <= 0 ? 0 : newPosition.bottom,
+			left: newPosition.left && newPosition.left <= 0 ? 0 : newPosition.left,
+			right: newPosition.right && newPosition.right <= 0 ? 0 : newPosition.right
+		};
 	};
 
 	const findClosestPosition = (args: {
@@ -192,7 +198,7 @@
 	};
 
 	const generatePosition = () => {
-		const mySizeInfo = ref.getBoundingClientRect();
+		const mySizeInfo = ref?.getBoundingClientRect();
 
 		const myWidth = mySizeInfo.width;
 		const myHeight = mySizeInfo.height;
@@ -252,19 +258,29 @@
 			}
 
 			position = convertPositionToValues(targetSizeInfo, mySizeInfo, forcedPosition);
-			checked = true;
 		}
 	};
 
-	$effect(() => {
+	onMount(() => {
 		generatePosition();
+		if (browser) {
+			window.addEventListener('resize', generatePosition);
+			window.addEventListener('scroll', generatePosition, true);
+		}
+	});
+
+	onDestroy(() => {
+		if (browser) {
+			window.removeEventListener('resize', generatePosition);
+			window.removeEventListener('scroll', generatePosition, true);
+		}
 	});
 </script>
 
 <div
 	bind:this={ref}
 	class="target-div"
-	style={`${position?.top ? `top: ${position.top}px;` : ''} ${position?.bottom ? `bottom: ${position.bottom}px;` : ''} ${position?.left ? `left: ${position.left}px;` : ''} ${position?.right ? `right: ${position.right}px;` : ''} ${matchParentWidth ? `min-width: ${targetSizeInfo.width + 10}px;` : ''}`}
+	style={`${position?.top ? `top: ${position.top}px;` : ''} ${position?.bottom ? `bottom: ${position.bottom}px;` : ''} ${position?.left ? `left: ${position.left}px;` : ''} ${position?.right ? `right: ${position.right}px;` : ''} ${matchParentWidth === 'at-least' ? `min-width: ${targetSizeInfo?.width}px;` : matchParentWidth === 'exact' ? `width: ${targetSizeInfo?.width}px;` : ''}`}
 >
 	{@render children()}
 </div>
@@ -272,7 +288,7 @@
 <style>
 	.target-div {
 		position: fixed;
-		z-index: 1;
+		z-index: 5;
 		min-height: fit-content;
 	}
 </style>

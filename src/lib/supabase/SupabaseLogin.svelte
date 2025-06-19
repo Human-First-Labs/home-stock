@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { SupabaseClient } from '@supabase/supabase-js';
-	import Cover from '../toolkit/Cover.svelte';
 	import { Turnstile } from 'svelte-turnstile';
 	import { page } from '$app/state';
 	import { goto, invalidateAll } from '$app/navigation';
@@ -18,7 +17,7 @@
 	const VITE_TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 	const login = async (token: string) => {
-		const email = document.querySelector('.hfl-field') as HTMLInputElement;
+		const email = document.querySelector('.basic-field') as HTMLInputElement;
 		if (!email) return;
 
 		const { error } = await supabase.auth.signInWithOtp({
@@ -39,13 +38,13 @@
 	};
 </script>
 
-<Cover>
+<div class="cover">
 	<div class="popup">
 		<h2>Login to HomeStock</h2>
 		{#if status === 'email-sent'}
 			<h4>An email has been sent to you with a link to login</h4>
 			<button
-				class="hfl-button bigger"
+				class="basic-button bigger"
 				onclick={() => {
 					invalidateAll();
 				}}>Continue</button
@@ -53,7 +52,7 @@
 		{:else}
 			<h4>Login with your email below, so we know what is yours and what isn't!</h4>
 			<input
-				class="hfl-field"
+				class="basic-field"
 				type="email"
 				placeholder="Email Address"
 				name="emailAddress"
@@ -64,13 +63,13 @@
 			</div>
 			<div class="row action-rows">
 				<button
-					class="hfl-button bigger"
+					class="basic-button bigger"
 					onclick={() => {
 						goto('/');
 					}}>Cancel</button
 				>
 				<button
-					class="hfl-button bigger"
+					class="basic-button bigger"
 					onclick={() => {
 						login(token!);
 					}}>Login</button
@@ -78,7 +77,7 @@
 			</div>
 		{/if}
 	</div>
-</Cover>
+</div>
 
 <style>
 	h4 {

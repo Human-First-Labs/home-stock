@@ -1,8 +1,14 @@
 export * from './Image.svelte';
 export * from './NotificationBox.svelte';
 export * from './TargetDiv.svelte';
-export * from './Card.svelte';
 export * from './Content.svelte';
-export * from './Cover.svelte';
+export * from './AutocompleteField.svelte';
+export * from './Drawer.svelte';
+export * from './FileUploader.svelte';
+export * from './PasswordField.svelte';
+export * from './Popup.svelte';
+export * from './CameraView.svelte';
 
-export * from './actions/index.js';
+export * from './actions';
+export * from './phone-input/PhoneInput.svelte';
+export * from './svgs/Spinner.svelte';
