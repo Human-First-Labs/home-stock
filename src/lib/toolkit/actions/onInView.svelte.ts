@@ -1,10 +1,10 @@
 import { onDestroy, onMount } from "svelte";
 
-export const inView = (el: Node,
-    args: {
-        callbackFunction: () => void;
-        revertFunction?: () => void;
-    }) => {
+export const inView = (el: Element, args: {
+    callbackFunction: () => void;
+    revertFunction?: () => void;
+}
+) => {
 
     const { callbackFunction, revertFunction } = args
 

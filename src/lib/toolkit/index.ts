@@ -7,8 +7,8 @@ export * from './Drawer.svelte';
 export * from './FileUploader.svelte';
 export * from './PasswordField.svelte';
 export * from './Popup.svelte';
-export * from './CameraView.svelte';
 
 export * from './actions';
 export * from './phone-input/PhoneInput.svelte';
 export * from './svgs/Spinner.svelte';
+export * from './utils';

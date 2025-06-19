@@ -32,13 +32,14 @@
 		"svelte-check": "4.2.1",
 		"typescript": "5.8.3",
 		"typescript-eslint": "8.34.1",
-		"vite": "6.3.5"
+		"vite": "6.3.5",
+		"@types/node": "24.0.3",
+		"@iconify/svelte": "5.0.0"
 	},
 	"dependencies": {
 		"@iconify-json/mdi": "1.2.3",
 		"@supabase/ssr": "0.6.1",
 		"@supabase/supabase-js": "2.50.0",
-		"socket.io-client": "4.8.1",
 		"svelte-turnstile": "0.11.0",
 		"unplugin-icons": "22.1.0"
 	}

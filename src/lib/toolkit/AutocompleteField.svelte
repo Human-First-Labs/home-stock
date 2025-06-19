@@ -3,7 +3,7 @@
 	import TargetDiv from './TargetDiv.svelte';
 	import { slide } from 'svelte/transition';
 	import { clickOutside } from './actions';
-	import { convertMalteseFonts } from '$lib/utils';
+	import { convertMalteseFonts } from './utils';
 
 	export interface AutocompleteOption {
 		id: string;
