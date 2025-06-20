@@ -1,13 +1,3 @@
-export interface SocketEvent {
-    id: string
-    name: SocketEventName
-    args?: {
-        [key: string]: unknown
-    }
-}
-export type SocketEventName = 'getUserById'
-
-
 export interface User {
     id: string
     supabaseUid: string
@@ -24,4 +14,13 @@ export interface User {
             whatsapp: boolean
         }
     }
+}
+
+export interface Item {
+    id: string
+    title: string
+    warningAmount: number
+    quantity: number
+    createdAt: string
+    updatedAt: string
 }

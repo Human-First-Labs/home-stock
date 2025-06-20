@@ -19,12 +19,10 @@ export const inView = (el: Element, args: {
     });
 
     onMount(() => {
-        console.log('onMount')
         observer.observe(el);
     });
 
     onDestroy(() => {
-        console.log('onDestroy')
         observer.disconnect();
     });
 }

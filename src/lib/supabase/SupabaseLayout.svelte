@@ -4,15 +4,14 @@
 
 	import type { Session, SupabaseClient } from '@supabase/supabase-js';
 
-	let {
-		session,
-		supabase,
-		children
-	}: {
+	export interface SupabaseLayoutProps {
 		session: Session | null;
 		supabase: SupabaseClient<any, 'public', any>;
+		token: string | undefined;
 		children: Snippet;
-	} = $props();
+	}
+
+	let { session, supabase, token, children }: SupabaseLayoutProps = $props();
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
@@ -20,6 +19,13 @@
 				invalidate('supabase:auth');
 			}
 		});
+
+		if (token) {
+			supabase.auth.verifyOtp({
+				token_hash: token,
+				type: 'email'
+			});
+		}
 
 		return () => data.subscription.unsubscribe();
 	});

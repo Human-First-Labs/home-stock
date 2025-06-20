@@ -118,8 +118,18 @@
 	{/if}
 </div>
 <div class="section">
-	<div class="section-content-2">
-		<div
+	<div
+		class="section-content-2"
+		use:inView={{
+			callbackFunction: () => {
+				ready2 = true;
+			},
+			revertFunction: () => {
+				ready2 = false;
+			}
+		}}
+	>
+		<!-- <div
 			class="content-2-marker"
 			use:inView={{
 				callbackFunction: () => {
@@ -129,7 +139,7 @@
 					ready2 = false;
 				}
 			}}
-		></div>
+		> -->
 		{#if ready2}
 			<div
 				class="row gapping"
@@ -210,6 +220,7 @@
 				</div>
 			</div>
 		{/if}
+		<!-- </div> -->
 	</div>
 </div>
 
@@ -236,6 +247,7 @@
 	}
 	.primary {
 		background-color: var(--primary-color);
+		max-height: 100vh;
 	}
 
 	.contrast-text {
@@ -279,13 +291,6 @@
 
 	.feature-row {
 		align-items: center;
-	}
-
-	.content-2-marker {
-		position: absolute;
-		top: 300px;
-		width: 10px;
-		height: 10px;
 	}
 
 	@media screen and (min-width: 1190px) {

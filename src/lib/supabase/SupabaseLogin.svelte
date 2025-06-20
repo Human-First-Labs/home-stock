@@ -3,6 +3,7 @@
 	import { Turnstile } from 'svelte-turnstile';
 	import { page } from '$app/state';
 	import { goto, invalidateAll } from '$app/navigation';
+	import Spinner from '$lib/toolkit/svgs/Spinner.svelte';
 
 	let {
 		supabase
@@ -11,26 +12,48 @@
 	} = $props();
 
 	let token = $state<string | null>(null);
+	let tokenError = $state('');
+	let email = $state('');
+	let emailError = $state('');
+
+	let loginLoading = $state(false);
 
 	let status = $state<'logging' | 'email-sent'>('logging');
 
 	const VITE_TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 	const login = async (token: string) => {
-		const email = document.querySelector('.basic-field') as HTMLInputElement;
-		if (!email) return;
+		let stop = false;
 
-		const { error } = await supabase.auth.signInWithOtp({
-			email: email.value,
-			options: {
-				captchaToken: token,
-				emailRedirectTo: page.url.origin + '/app'
-			}
-		});
-		if (error) {
-			console.error(error);
+		if (!email) {
+			emailError = 'Please enter your email address';
+			stop = true;
+		} else {
+			emailError = '';
 		}
-		status = 'email-sent';
+
+		if (!token) {
+			tokenError = 'Please complete the captcha';
+			stop = true;
+		} else {
+			tokenError = '';
+		}
+
+		if (!stop) {
+			loginLoading = true;
+			const { error } = await supabase.auth.signInWithOtp({
+				email,
+				options: {
+					captchaToken: token,
+					emailRedirectTo: page.url.origin + '/app'
+				}
+			});
+			if (error) {
+				console.error(error);
+			}
+			status = 'email-sent';
+			loginLoading = false;
+		}
 	};
 
 	const tokenGetter = (e: CustomEvent<{ token: string; preClearanceObtained: boolean }>) => {
@@ -38,42 +61,50 @@
 	};
 </script>
 
-<div class="cover">
-	<div class="popup">
+<div class="column main">
+	<div class="column form">
 		<h2>Login to HomeStock</h2>
 		{#if status === 'email-sent'}
-			<h4>An email has been sent to you with a link to login</h4>
-			<button
-				class="basic-button bigger"
-				onclick={() => {
-					invalidateAll();
-				}}>Continue</button
-			>
+			<h4>An email has been sent to you with a link to login.</h4>
 		{:else}
-			<h4>Login with your email below, so we know what is yours and what isn't!</h4>
-			<input
-				class="basic-field"
-				type="email"
-				placeholder="Email Address"
-				name="emailAddress"
-				required
-			/>
+			<h4>Login with your email below, to start wasting less, and having more!</h4>
+			<div class="column">
+				<input
+					class="basic-field"
+					type="email"
+					placeholder="Email Address"
+					name="emailAddress"
+					bind:value={email}
+				/>
+				{#if emailError}
+					<small class="error-message">{emailError}</small>
+				{/if}
+			</div>
 			<div class="container">
 				<Turnstile siteKey={VITE_TURNSTILE_SITE_KEY} on:callback={tokenGetter} />
+				{#if tokenError}
+					<small class="error-message">{tokenError}</small>
+				{/if}
 			</div>
 			<div class="row action-rows">
 				<button
-					class="basic-button bigger"
+					class="primary-button bigger"
 					onclick={() => {
 						goto('/');
 					}}>Cancel</button
 				>
 				<button
-					class="basic-button bigger"
+					class="primary-button bigger"
 					onclick={() => {
 						login(token!);
-					}}>Login</button
+					}}
 				>
+					{#if loginLoading}
+						<Spinner />
+					{:else}
+						Login
+					{/if}
+				</button>
 			</div>
 		{/if}
 	</div>
@@ -82,11 +113,14 @@
 <style>
 	h4 {
 		margin: 0;
+		text-align: center;
 	}
 
-	.popup {
+	.form {
 		min-width: 340px;
 		gap: 20px;
+		padding: 20px;
+		align-items: center;
 	}
 
 	.bigger {
@@ -99,5 +133,12 @@
 		display: flex;
 		justify-content: space-around;
 		width: 100%;
+	}
+
+	.main {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
 	}
 </style>

@@ -1,5 +1,5 @@
 import { isBrowser, createBrowserClient, createServerClient } from '@supabase/ssr';
-import { redirect, type Handle, type HandleFetch } from '@sveltejs/kit';
+import { type Handle, type HandleFetch } from '@sveltejs/kit';
 import { PUBLIC_SUPABASE_API_KEY } from '$env/static/public'
 
 interface DataArguments {
@@ -120,26 +120,25 @@ export const generateSupabaseHandler = (args: { supabaseUrl: string; supabaseKey
 		});
 	};
 
-	const authGuard: Handle = async ({ event, resolve }) => {
-		const { session, user } = await event.locals.safeGetSession();
-		console.log('AT Auth Guard - ', session, user);
+	// const authGuard: Handle = async ({ event, resolve }) => {
+	// 	const { session, user } = await event.locals.safeGetSession();
+	// 	console.log('AT Auth Guard - ', session, user);
 
-		if (!session && event.url.pathname.startsWith('/app')) {
-			return redirect(303, '/');
-		}
+	// 	if (!session && event.url.pathname.startsWith('/app')) {
+	// 		return redirect(303, '/');
+	// 	}
 
-		return resolve(event);
-	};
+	// 	return resolve(event);
+	// };
 
 	return {
-		authGuard,
+		// authGuard,
 		supabaseHandler
 	};
 };
 
 export const tokenFetchHandle: HandleFetch = async ({ request, fetch, event }) => {
-	const { session, user } = await event.locals.safeGetSession();
-	console.log('AT API TIME - ', session, user);
+	const { session } = await event.locals.safeGetSession();
 
 	const newHeaders = new Headers(request.headers);
 

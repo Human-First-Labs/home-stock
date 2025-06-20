@@ -14,12 +14,17 @@
 	};
 </script>
 
-<div class="section">
+<div class="section column">
+	<h1>Welcome to HomeStock</h1>
 	<div class="section-content">
+		{#if !data.currentScan.status}
+			<p>Current Scan: {data.currentScan.lines.length} items</p>
+		{/if}
 		<button class="basic-button bigger"> Scan a Receipt </button>
 		<button class="basic-button bigger"> Items </button>
 		<button class="basic-button bigger"> Shopping Lists </button>
 		<hr class="basic-hr" />
+		<p>Logged In with {data.supabaseData.user?.email}</p>
 		<button class="basic-button bigger" onclick={logout}> Logout </button>
 	</div>
 </div>
@@ -27,9 +32,11 @@
 <style>
 	.section {
 		justify-content: center;
+		align-items: center;
 		width: 100%;
 		display: flex;
 		padding: 50px 0;
+		gap: 20px;
 	}
 	.section-content {
 		display: flex;

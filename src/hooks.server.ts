@@ -7,13 +7,15 @@ import { generateSupabaseHandler, tokenFetchHandle } from '$lib/supabase/util'
 const PUBLIC_SUPABASE_URL = `https://${PUBLIC_SUPABASE_PROJECT_ID}.supabase.co`
 
 const {
-    authGuard,
+    // authGuard,
     supabaseHandler
 } = generateSupabaseHandler({
     supabaseKey: PUBLIC_SUPABASE_API_KEY,
     supabaseUrl: PUBLIC_SUPABASE_URL
 })
 
-export const handle: Handle = sequence(supabaseHandler, authGuard)
+export const handle: Handle = sequence(supabaseHandler,
+    // authGuard
+)
 
 export const handleFetch: HandleFetch = tokenFetchHandle
