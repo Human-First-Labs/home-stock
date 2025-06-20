@@ -41,6 +41,7 @@
 
 		if (!stop) {
 			loginLoading = true;
+			console.log('test', page.url.origin + '/app');
 			const { error } = await supabase.auth.signInWithOtp({
 				email,
 				options: {
