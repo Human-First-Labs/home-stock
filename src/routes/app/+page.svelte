@@ -1,49 +1,34 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
 
 	const { data }: PageProps = $props();
-	const { supabaseData } = $derived(data);
-
-	const logout = async () => {
-		goto('/');
-		const { error } = await supabaseData.supabase.auth.signOut();
-		if (error) {
-			console.error('Error logging out:', error.message);
-		}
-	};
 </script>
 
 <div class="section column">
 	<h1>Welcome to HomeStock</h1>
-	<div class="section-content">
-		{#if !data.currentScan.status}
-			<p>Current Scan: {data.currentScan.lines.length} items</p>
-		{/if}
-		<button class="basic-button bigger"> Scan a Receipt </button>
+	{#if data.currentScan}
+		<p>Current Scan: {data.currentScan.lines.length} items</p>
+	{/if}
+	<a class="basic-a" href="/app/scan">
+		<button class="basic-button bigger">
+			{#if data.currentScan}
+				Continue Receipt Scan
+			{:else}
+				Scan Receipt
+			{/if}
+		</button>
+	</a>
+	<a class="basic-a" href="/app/items">
 		<button class="basic-button bigger"> Items </button>
+	</a>
+	<a class="basic-a" href="/app/shopping-lists">
 		<button class="basic-button bigger"> Shopping Lists </button>
-		<hr class="basic-hr" />
-		<p>Logged In with {data.supabaseData.user?.email}</p>
-		<button class="basic-button bigger" onclick={logout}> Logout </button>
-	</div>
+	</a>
 </div>
 
 <style>
 	.section {
-		justify-content: center;
-		align-items: center;
-		width: 100%;
-		display: flex;
-		padding: 50px 0;
-		gap: 20px;
-	}
-	.section-content {
-		display: flex;
-		flex-direction: column;
-		width: 80%;
-		gap: 20px;
-		justify-content: center;
+		gap: 10px;
 		align-items: center;
 	}
 

@@ -35,8 +35,9 @@ export const itemService = (fetch: Fetch) => {
             }>
         },
         updateItem: async (id: string, product: {
-            title: string,
-            warningAmount: number,
+            title?: string,
+            warningAmount?: number,
+            quantity?: number
         }) => {
             return (await fetch(PUBLIC_API_URL + '/update/item/' + id, {
                 'method': 'PATCH',

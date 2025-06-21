@@ -38,9 +38,7 @@ export const receiptService = (fetch: Fetch) => {
             })).json() as Promise<{
                 id: string,
                 lines: ReceiptLineType[]
-            } | {
-                status: 'NO_PENDING_SCANS'
-            }>
+            } | undefined>
         },
         cancelReceiptScan: async (id: string) => {
             return (await fetch(PUBLIC_API_URL + '/cancel/receipt/' + id, {
@@ -54,7 +52,7 @@ export const receiptService = (fetch: Fetch) => {
                 'method': 'PATCH',
             })).json() as Promise<{
                 unconfirmedLines: ReceiptLineType[]
-            }>
+            } | undefined>
         },
         confirmReceiptLine: async (scanId: string, data: {
             actionedInfo: ActionedInfoLine,
@@ -65,7 +63,7 @@ export const receiptService = (fetch: Fetch) => {
                 body: JSON.stringify(data)
             })).json() as Promise<{
                 unconfirmedLines: ReceiptLineType[]
-            }>
+            } | undefined>
         }
     }
 
