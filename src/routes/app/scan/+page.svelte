@@ -1,6 +1,5 @@
 <script lang="ts">
 	import CameraView from '$lib/toolkit/CameraView.svelte';
-	import { fly } from 'svelte/transition';
 
 	let imagesLinks = $state<string[]>([]);
 </script>

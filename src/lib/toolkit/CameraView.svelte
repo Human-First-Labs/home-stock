@@ -20,9 +20,7 @@
 	let mode = $state<'Taking' | 'Confirming'>('Taking');
 	const loading = $derived(canvas && webcamStream && video && ctx);
 	let currentCamera = $state(0);
-	const cameraAmount = $derived.by(() => {
-		return webcamStream ? webcamStream.getVideoTracks().length : 0;
-	});
+	let cameraAmount = $state(0);
 
 	const initialize = async () => {
 		try {
@@ -37,6 +35,8 @@
 			video.srcObject = webcamStream;
 
 			video.play();
+			cameraAmount = webcamStream.getVideoTracks().length;
+			console.log('Camera amount:', cameraAmount);
 			const camSettings = webcamStream.getVideoTracks()[currentCamera].getSettings();
 			canvas = document.getElementById('camera-canvas') as HTMLCanvasElement;
 			ctx = canvas.getContext('2d');
@@ -141,7 +141,7 @@
 				</div>
 				{#if cameraAmount > 1}
 					<button class="next-instruction-part" onclick={toggleCamera}>
-						<p>Toggle Camera ({currentCamera + 1}/{cameraAmount})</p>
+						<p>Toggle Camera ({currentCamera + 1}/{cameraAmount + 1})</p>
 					</button>
 				{/if}
 			</div>
