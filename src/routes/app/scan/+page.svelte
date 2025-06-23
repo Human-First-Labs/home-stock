@@ -5,7 +5,7 @@
 	let imagesLinks = $state<string[]>([]);
 </script>
 
-<div class="grid">
+<!-- <div class="grid">
 	{#each imagesLinks as link, index}
 		<div
 			class="image"
@@ -17,21 +17,20 @@
 			<img src={link} width="450px" alt={'image-' + index} />
 		</div>
 	{/each}
-</div>
+</div> -->
 <section class="section">
 	<CameraView
 		addImageLink={(imageLink) => {
 			imagesLinks.push(imageLink);
 		}}
-		skipConfirmation
 	/>
 </section>
 
 <style>
-	.grid {
+	/* .grid {
 		display: flex;
 		flex-wrap: wrap;
-	}
+	} */
 	section {
 		display: flex;
 		flex: 0.6;

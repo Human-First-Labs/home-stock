@@ -18,7 +18,11 @@
 
 	let error = $state('');
 	let mode = $state<'Taking' | 'Confirming'>('Taking');
-	let loading = $derived(canvas && webcamStream && video && ctx);
+	const loading = $derived(canvas && webcamStream && video && ctx);
+	let currentCamera = $state(0);
+	const cameraAmount = $derived.by(() => {
+		return webcamStream ? webcamStream.getVideoTracks().length : 0;
+	});
 
 	const initialize = async () => {
 		try {
@@ -33,7 +37,7 @@
 			video.srcObject = webcamStream;
 
 			video.play();
-			const camSettings = webcamStream.getVideoTracks()[0].getSettings();
+			const camSettings = webcamStream.getVideoTracks()[currentCamera].getSettings();
 			canvas = document.getElementById('camera-canvas') as HTMLCanvasElement;
 			ctx = canvas.getContext('2d');
 			if (camSettings.width) {
@@ -60,6 +64,18 @@
 				mode = 'Confirming';
 			}
 		}
+	};
+
+	const toggleCamera = () => {
+		if (cameraAmount > 1) {
+			if (currentCamera < cameraAmount - 1) {
+				currentCamera += 1;
+			} else {
+				currentCamera = 0;
+			}
+		}
+
+		initialize();
 	};
 
 	const discardPhoto = () => {
@@ -119,8 +135,15 @@
 			<track kind="captions" />
 		</video>
 		{#if mode === 'Taking'}
-			<div class="instruction">
-				<p>Click anyway to take photo</p>
+			<div class="next-instruction">
+				<div class="instruction">
+					<p>Click take photo</p>
+				</div>
+				{#if cameraAmount > 1}
+					<button class="next-instruction-part" onclick={toggleCamera}>
+						<p>Toggle Camera ({currentCamera + 1}/{cameraAmount})</p>
+					</button>
+				{/if}
 			</div>
 		{:else}
 			<div class="next-instruction">
