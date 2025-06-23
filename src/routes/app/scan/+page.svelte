@@ -28,11 +28,6 @@
 </section>
 
 <style>
-	.section {
-		position: absolute;
-		left: 50%;
-		transform: translate(-50%, 0);
-	}
 	.grid {
 		display: flex;
 		flex-wrap: wrap;
