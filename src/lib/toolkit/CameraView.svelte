@@ -19,33 +19,58 @@
 	let error = $state('');
 	let mode = $state<'Taking' | 'Confirming'>('Taking');
 	const loading = $derived(canvas && webcamStream && video && ctx);
-	let currentCamera = $state(0);
+	let currentCamera = $state<'environment' | 'user'>('environment');
 	let cameraAmount = $state(0);
 
 	const initialize = async () => {
 		try {
-			if (!webcamStream || !video) {
+			if (!video) {
 				const devices = await navigator.mediaDevices.enumerateDevices();
 				cameraAmount = devices.filter((device) => device.kind === 'videoinput').length;
-				webcamStream = await navigator.mediaDevices.getUserMedia({
-					audio: false,
-					video: true
-				});
+
 				video = document.getElementById('camera-view') as HTMLVideoElement;
 			}
+
+			await turnOnCamera();
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				error = err.message;
+			} else {
+				error = 'error obtaining navigator.mediaDevices.getUserMedia';
+			}
+		}
+	};
+
+	const turnOnCamera = async () => {
+		if (!video) {
+			error = 'Video element not found';
+			return;
+		}
+
+		try {
+			webcamStream = await navigator.mediaDevices.getUserMedia({
+				audio: false,
+				video: {
+					facingMode: {
+						ideal: currentCamera
+					}
+				}
+			});
 
 			video.srcObject = webcamStream;
 
 			video.play();
-			const camSettings = webcamStream.getVideoTracks()[currentCamera].getSettings();
 			canvas = document.getElementById('camera-canvas') as HTMLCanvasElement;
 			ctx = canvas.getContext('2d');
-			if (camSettings.width) {
-				canvas.width = camSettings.width;
-			}
-			if (camSettings.height) {
-				canvas.height = camSettings.height;
-			}
+			video.onloadeddata = () => {
+				if (video?.videoHeight) {
+					canvas!.height = video.videoHeight;
+				}
+
+				if (video?.videoWidth) {
+					canvas!.width = video.videoWidth;
+				}
+			};
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				error = err.message;
@@ -68,14 +93,9 @@
 
 	const toggleCamera = () => {
 		if (cameraAmount > 1) {
-			if (currentCamera < cameraAmount - 1) {
-				currentCamera += 1;
-			} else {
-				currentCamera = 0;
-			}
+			currentCamera = currentCamera === 'environment' ? 'user' : 'environment';
+			turnOnCamera();
 		}
-
-		initialize();
 	};
 
 	const discardPhoto = () => {
