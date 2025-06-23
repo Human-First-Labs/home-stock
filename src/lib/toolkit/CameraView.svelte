@@ -25,6 +25,8 @@
 	const initialize = async () => {
 		try {
 			if (!webcamStream || !video) {
+				const devices = await navigator.mediaDevices.enumerateDevices();
+				cameraAmount = devices.filter((device) => device.kind === 'videoinput').length;
 				webcamStream = await navigator.mediaDevices.getUserMedia({
 					audio: false,
 					video: true
@@ -35,8 +37,6 @@
 			video.srcObject = webcamStream;
 
 			video.play();
-			cameraAmount = webcamStream.getVideoTracks().length;
-			console.log('Camera amount:', cameraAmount);
 			const camSettings = webcamStream.getVideoTracks()[currentCamera].getSettings();
 			canvas = document.getElementById('camera-canvas') as HTMLCanvasElement;
 			ctx = canvas.getContext('2d');
@@ -139,11 +139,11 @@
 				<div class="instruction">
 					<p>Click take photo</p>
 				</div>
-				{#if cameraAmount > 1}
-					<button class="next-instruction-part" onclick={toggleCamera}>
-						<p>Toggle Camera ({currentCamera + 1}/{cameraAmount + 1})</p>
-					</button>
-				{/if}
+				<!-- {#if cameraAmount > 1} -->
+				<button class="next-instruction-part" onclick={toggleCamera}>
+					<p>Toggle Camera ({currentCamera + 1}/{cameraAmount})</p>
+				</button>
+				<!-- {/if} -->
 			</div>
 		{:else}
 			<div class="next-instruction">
