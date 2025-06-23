@@ -2,8 +2,8 @@
 	import Spinner from '$lib/toolkit/svgs/Spinner.svelte';
 	import { fade, slide } from 'svelte/transition';
 	import type { PageProps } from './$types';
-	import Icon from '@iconify/svelte';
 	import ItemCard from '$lib/ItemCard.svelte';
+	import type { Item } from '$lib/api/types';
 
 	const { data }: PageProps = $props();
 
@@ -11,6 +11,7 @@
 
 	let itemForm = $state(false);
 	let editItem = $state('');
+	let deleteItem = $state<Item>();
 
 	let itemTitle = $state('');
 	let titleError = $state('');
@@ -20,6 +21,8 @@
 
 	let generalItemError = $state('');
 	let itemSaveLoading = $state(false);
+	let deleteLoading = $state(false);
+	let deleteError = $state<string | null>(null);
 
 	let search = $state('');
 
@@ -174,7 +177,7 @@
 			{#each searchItems as item (item.id)}
 				<ItemCard
 					deleteFunction={async () => {
-						await data.deleteItem(item.id);
+						deleteItem = item;
 					}}
 					bind:itemForm
 					bind:editItem
@@ -192,6 +195,48 @@
 		<p>No items found. Start adding items to your inventory!</p>
 	{/if}
 </div>
+{#if deleteItem}
+	<div class="cover">
+		<div class="popup" in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}>
+			<h2>Delete Item</h2>
+			<p>Are you sure you want to delete the item "{deleteItem.title}"?</p>
+			<div class="btn-row">
+				<button
+					class="basic-button action-button"
+					onclick={() => {
+						deleteItem = undefined;
+					}}
+				>
+					Cancel
+				</button>
+				<button
+					class="basic-button action-button"
+					onclick={async () => {
+						if (deleteItem) {
+							deleteLoading = true;
+							try {
+								await data.deleteItem(deleteItem.id);
+								deleteItem = undefined;
+							} catch (e) {
+								deleteError = e instanceof Error ? e.message : 'An unknown error occurred';
+							}
+						}
+						deleteLoading = false;
+					}}
+				>
+					{#if deleteLoading}
+						<Spinner />
+					{:else}
+						Delete
+					{/if}
+				</button>
+			</div>
+			{#if deleteError}
+				<small class="error-message">{deleteError}</small>
+			{/if}
+		</div>
+	</div>
+{/if}
 
 <style>
 	.section {
@@ -226,5 +271,17 @@
 	.form-row {
 		display: flex;
 		gap: 20px;
+	}
+
+	.popup {
+		background-color: var(--background-color);
+		border-radius: 10px;
+		padding: 20px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		width: 400px;
+
+		> h2 {
+			color: var(--primary-color);
+		}
 	}
 </style>

@@ -70,16 +70,16 @@
 				'With the data import feature, you can import your data from a file, in order to migrate from another app, or to keep a backup of your data.'
 		},
 		{
-			name: 'Household Feature',
-			extract: 'Manage your household inventory',
+			name: 'Item Organization Feature',
+			extract: 'Organize your items into categories',
 			description:
-				'With the household feature, you can manage your household inventory, and keep track of what each member of your household has at home, and what you need to buy.'
+				'With the item organization feature, you can organize your items into categories, in order to make it easier to find what you are looking for. This feature is ideal for users with a large number of items.'
 		},
 		{
-			name: 'Data Sharing',
-			extract: 'Share your data with others',
+			name: 'Shopping List Sharing',
+			extract: 'Shopping list state is shared between devices',
 			description:
-				'With the data sharing feature, you can share your data with others, in order to collaborate on your inventory, or to share your shopping list with others.'
+				'With the shopping list sharing feature, you can share your shopping list state between devices. This way, you can keep track of what you need to buy, and what you have already bought, from any device. This feature is ideal for users who use the app on multiple devices.'
 		},
 		{
 			name: 'Fully Offline Mode',
@@ -119,7 +119,7 @@
 </div>
 <div class="section">
 	<div
-		class="section-content-2"
+		class="section-content-3"
 		use:inView={{
 			callbackFunction: () => {
 				ready2 = true;
@@ -129,17 +129,6 @@
 			}
 		}}
 	>
-		<!-- <div
-			class="content-2-marker"
-			use:inView={{
-				callbackFunction: () => {
-					ready2 = true;
-				},
-				revertFunction: () => {
-					ready2 = false;
-				}
-			}}
-		> -->
 		{#if ready2}
 			<div
 				class="row gapping"
@@ -220,8 +209,50 @@
 				</div>
 			</div>
 		{/if}
-		<!-- </div> -->
 	</div>
+</div>
+
+<div
+	class="section-content-2"
+	in:fly={{ y: 100, duration: 500 }}
+	out:fly={{ y: 100, duration: 500 }}
+>
+	<h1>How automatic scanning works</h1>
+	<br />
+	<p>
+		The following is a very basic explanation of how Home Stock works. For those who like to get
+		their hands dirty, Home Stock is fully open source and can be checked out here:
+	</p>
+	<ul>
+		<li><a class="basic-a" href="https://github.com/Human-First-Labs/home-stock">Frontend</a></li>
+		<li>
+			<a class="basic-a" href="https://github.com/Human-First-Labs/home-stock-api">Backend</a>
+		</li>
+	</ul>
+	<p>
+		In short, Home Stock asks the user to that a clear image of their receipt, and passes on this
+		image to a third party image recognition AI trained specifically to understand receipts (kudos
+		to <a class="basic-a" href="https://www.veryfi.com/">Veryfi</a>).
+	</p>
+	<br />
+	<p>
+		Using the information returned from this AI, Home Stock automatically links identical items
+		already registered in your system, and requests your review. During this review, automatically
+		linked items can be accepted immediately or ammended, and new items can be added to your
+		inventory with automatically generated information.
+	</p>
+	<br />
+	<p>
+		Finally, after approval, Home Stock takes note of any new items, and creates new automatic
+		linked items, in an attempt to make the next receipt scan ever easier.
+	</p>
+	<br />
+	<p>
+		It is expected that the review process will significantly longer every time new items, new
+		brands or new shops are introduced, however, the more you use Home Stock, the quicker the
+		following review will be.
+	</p>
+	<br />
 </div>
 
 <style>
@@ -266,7 +297,12 @@
 	.section-content-2 {
 		width: 100%;
 		padding: 0 10%;
-		min-height: 400px;
+	}
+
+	.section-content-3 {
+		width: 100%;
+		padding: 0 10%;
+		gap: 20px;
 	}
 
 	.big-text {

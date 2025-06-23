@@ -6,23 +6,30 @@
 	import Spinner from '$lib/toolkit/svgs/Spinner.svelte';
 
 	let {
-		supabase
+		supabase,
+		code
 	}: {
 		supabase: SupabaseClient<any, 'public', any>;
+		code: string | undefined;
 	} = $props();
 
 	let token = $state<string | null>(null);
 	let tokenError = $state('');
 	let email = $state('');
 	let emailError = $state('');
+	let emailCode = $state<string | null>(code || '');
+	let emailCodeError = $state('');
 
 	let loginLoading = $state(false);
+	let loginError = $state<string | null>(null);
+	let verifyLoading = $state(false);
+	let verifyError = $state<string | null>(null);
 
-	let status = $state<'logging' | 'email-sent'>('logging');
+	let status = $state<'logging' | 'email-sent'>(code ? 'email-sent' : 'logging');
 
 	const VITE_TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
-	const login = async (token: string) => {
+	const login = async () => {
 		let stop = false;
 
 		if (!email) {
@@ -41,19 +48,50 @@
 
 		if (!stop) {
 			loginLoading = true;
-			console.log('test', page.url.origin + '/app');
 			const { error } = await supabase.auth.signInWithOtp({
 				email,
 				options: {
-					captchaToken: token,
+					captchaToken: token!,
 					emailRedirectTo: page.url.origin + '/app'
 				}
 			});
 			if (error) {
 				console.error(error);
+				loginError = error.message;
+			} else {
+				localStorage.setItem('temp-login-email', email);
+				status = 'email-sent';
 			}
-			status = 'email-sent';
 			loginLoading = false;
+		}
+	};
+
+	const verifyLogin = async () => {
+		if (!emailCode) {
+			emailCodeError = 'Please enter the code from your email';
+		} else {
+			emailCodeError = '';
+			verifyLoading = true;
+			const actualEmail = email || localStorage.getItem('temp-login-email') || '';
+			const { error } = await supabase.auth.verifyOtp({
+				email: actualEmail,
+				token: emailCode,
+				type: 'email'
+			});
+			if (error) {
+				console.error(error);
+				verifyError = error.message;
+			} else {
+				localStorage.removeItem('temp-login-email');
+				emailCode = '';
+				email = '';
+				await invalidateAll();
+				goto('/app', {
+					replaceState: true
+				});
+				status = 'logging';
+			}
+			verifyLoading = false;
 		}
 	};
 
@@ -66,7 +104,38 @@
 	<div class="column form">
 		<h2>Login to HomeStock</h2>
 		{#if status === 'email-sent'}
-			<h4>An email has been sent to you with a link to login.</h4>
+			<h4>An email has been sent to you with your one time login code.</h4>
+			<h4>Please check your inbox and enter the code below.</h4>
+			<div class="column">
+				<input
+					class="basic-field"
+					type="text"
+					placeholder="One Time Login Code"
+					name="emailCode"
+					bind:value={emailCode}
+				/>
+				{#if emailCodeError}
+					<small class="error-message">{emailCodeError}</small>
+				{/if}
+			</div>
+			<div class="row action-rows">
+				<button
+					class="primary-button bigger"
+					onclick={() => {
+						goto('/');
+					}}>Cancel</button
+				>
+				<button class="primary-button bigger" onclick={verifyLogin}>
+					{#if verifyLoading}
+						<Spinner />
+					{:else}
+						Verify Code
+					{/if}
+				</button>
+			</div>
+			{#if verifyError}
+				<small class="error-message">{verifyError}</small>
+			{/if}
 		{:else}
 			<h4>Login with your email below, to start wasting less, and having more!</h4>
 			<div class="column">
@@ -94,12 +163,7 @@
 						goto('/');
 					}}>Cancel</button
 				>
-				<button
-					class="primary-button bigger"
-					onclick={() => {
-						login(token!);
-					}}
-				>
+				<button class="primary-button bigger" onclick={login}>
 					{#if loginLoading}
 						<Spinner />
 					{:else}
@@ -107,6 +171,9 @@
 					{/if}
 				</button>
 			</div>
+			{#if loginError}
+				<small class="error-message">{loginError}</small>
+			{/if}
 		{/if}
 	</div>
 </div>

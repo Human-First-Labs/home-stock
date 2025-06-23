@@ -15,7 +15,7 @@
 		itemTitle: string;
 		itemWarningAmount: string;
 		itemQuantity: string;
-		deleteFunction: () => Promise<void>;
+		deleteFunction: () => void;
 		quantityChangeFunction: (change: number) => Promise<void>;
 	}
 
@@ -31,7 +31,6 @@
 	}: ItemCardProps = $props();
 
 	let quantityLoading = $state(false);
-	let deleteLoading = $state(false);
 </script>
 
 <div class="item-card" in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}>
@@ -94,25 +93,8 @@
 	</div>
 
 	<hr class="basic-hr" />
-	<button
-		class="hidden-button icon-button"
-		type="button"
-		onclick={async () => {
-			deleteLoading = true;
-			try {
-				await deleteFunction();
-			} catch (e) {
-				console.error('Error deleting item:', e);
-			}
-
-			deleteLoading = false;
-		}}
-	>
-		{#if deleteLoading}
-			<Spinner />
-		{:else}
-			<Icon icon="material-symbols:delete-forever-outline-rounded" font-size={20} />
-		{/if}
+	<button class="hidden-button icon-button" type="button" onclick={deleteFunction}>
+		<Icon icon="material-symbols:delete-forever-outline-rounded" font-size={20} />
 	</button>
 </div>
 

@@ -28,18 +28,20 @@
 		"eslint-plugin-svelte": "3.9.3",
 		"globals": "16.2.0",
 		"npm-check": "6.0.1",
-		"prettier": "3.5.3",
+		"prettier": "3.6.0",
 		"prettier-plugin-svelte": "3.4.0",
 		"svelte": "5.34.7",
 		"svelte-check": "4.2.2",
 		"typescript": "5.8.3",
 		"typescript-eslint": "8.34.1",
-		"vite": "6.3.5"
+		"vite": "6.3.5",
+		"@types/luxon": "3.6.2"
 	},
 	"dependencies": {
 		"@iconify-json/mdi": "1.2.3",
 		"@supabase/ssr": "0.6.1",
 		"@supabase/supabase-js": "2.50.0",
+		"luxon": "3.6.1",
 		"svelte-turnstile": "0.11.0",
 		"unplugin-icons": "22.1.0"
 	}

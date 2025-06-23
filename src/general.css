@@ -1,3 +1,7 @@
 :root {
 	--max-site-width: 1440px;
 }
+
+.basic-a {
+	color: var(--primary-color);
+}

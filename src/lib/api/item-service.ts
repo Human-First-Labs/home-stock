@@ -1,5 +1,5 @@
 import type { Fetch } from "@supabase/supabase-js/dist/module/lib/types"
-import type { Item } from "./types"
+import type { Item, ShoppingList } from "./types"
 import { PUBLIC_API_URL } from '$env/static/public';
 
 export const itemService = (fetch: Fetch) => {
@@ -85,14 +85,21 @@ export const itemService = (fetch: Fetch) => {
             return (await fetch(PUBLIC_API_URL + '/get/my-shopping-lists', {
                 'method': 'GET',
             })).json() as Promise<{
-                shoppingList: Item[] | undefined
+                shoppingLists: ShoppingList[] | undefined
             }>
         },
         getShoppingList: async (id: string) => {
-            return (await fetch(PUBLIC_API_URL + '/get/my-shopping-list/' + id, {
+            return (await fetch(PUBLIC_API_URL + '/get/shopping-list/' + id, {
                 'method': 'GET',
             })).json() as Promise<{
-                shoppingList: Item
+                shoppingList: ShoppingList
+            }>
+        },
+        deleteShoppingList: async (id: string) => {
+            return (await fetch(PUBLIC_API_URL + '/delete/shopping-list/' + id, {
+                'method': 'DELETE',
+            })).json() as Promise<{
+                shoppingList: ShoppingList | undefined
             }>
         }
 

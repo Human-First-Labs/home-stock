@@ -24,3 +24,14 @@ export interface Item {
     createdAt: string
     updatedAt: string
 }
+
+export interface ShoppingList {
+    id: string
+    items: {
+        id: string
+        title: string
+        currentQuantity: number
+        warningAmount: number
+    }[]
+    createdAt: string
+}

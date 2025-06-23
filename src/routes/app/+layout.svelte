@@ -21,10 +21,10 @@
 	//TODO here would be the offline check once it is implemented
 </script>
 
-<SupabaseLayout {session} {supabase} token={page.url.searchParams.get('token_hash') || undefined}>
+<SupabaseLayout {session} {supabase}>
 	<div class="column content" style="gap: 20px">
 		{#if !user}
-			<SupabaseLogin {supabase} />
+			<SupabaseLogin {supabase} code={page.url.searchParams.get('code') || undefined} />
 		{:else}
 			<div class="section column">
 				<div class="section-content">

@@ -7,25 +7,10 @@
 	export interface SupabaseLayoutProps {
 		session: Session | null;
 		supabase: SupabaseClient<any, 'public', any>;
-		token: string | undefined;
 		children: Snippet;
 	}
 
-	let { session, supabase, token, children }: SupabaseLayoutProps = $props();
-
-	const verifyOtp = async () => {
-		if (token) {
-			const { error } = await supabase.auth.verifyOtp({
-				token_hash: token,
-				type: 'email'
-			});
-			if (error) {
-				console.error('Error verifying OTP:', error.message);
-			}
-
-			invalidate('supabase:auth');
-		}
-	};
+	let { session, supabase, children }: SupabaseLayoutProps = $props();
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
@@ -33,10 +18,6 @@
 				invalidate('supabase:auth');
 			}
 		});
-
-		if (token) {
-			verifyOtp();
-		}
 
 		return () => data.subscription.unsubscribe();
 	});
