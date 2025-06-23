@@ -14,6 +14,7 @@
 
 	let ready1 = $state(false);
 	let ready2 = $state(false);
+	let ready3 = $state(false);
 
 	onMount(() => (ready1 = true));
 
@@ -211,48 +212,62 @@
 		{/if}
 	</div>
 </div>
-
 <div
-	class="section-content-2"
-	in:fly={{ y: 100, duration: 500 }}
-	out:fly={{ y: 100, duration: 500 }}
+	use:inView={{
+		callbackFunction: () => {
+			ready3 = true;
+		},
+		revertFunction: () => {
+			ready3 = false;
+		}
+	}}
 >
-	<h1>How automatic scanning works</h1>
-	<br />
-	<p>
-		The following is a very basic explanation of how Home Stock works. For those who like to get
-		their hands dirty, Home Stock is fully open source and can be checked out here:
-	</p>
-	<ul>
-		<li><a class="basic-a" href="https://github.com/Human-First-Labs/home-stock">Frontend</a></li>
-		<li>
-			<a class="basic-a" href="https://github.com/Human-First-Labs/home-stock-api">Backend</a>
-		</li>
-	</ul>
-	<p>
-		In short, Home Stock asks the user to that a clear image of their receipt, and passes on this
-		image to a third party image recognition AI trained specifically to understand receipts (kudos
-		to <a class="basic-a" href="https://www.veryfi.com/">Veryfi</a>).
-	</p>
-	<br />
-	<p>
-		Using the information returned from this AI, Home Stock automatically links identical items
-		already registered in your system, and requests your review. During this review, automatically
-		linked items can be accepted immediately or ammended, and new items can be added to your
-		inventory with automatically generated information.
-	</p>
-	<br />
-	<p>
-		Finally, after approval, Home Stock takes note of any new items, and creates new automatic
-		linked items, in an attempt to make the next receipt scan ever easier.
-	</p>
-	<br />
-	<p>
-		It is expected that the review process will significantly longer every time new items, new
-		brands or new shops are introduced, however, the more you use Home Stock, the quicker the
-		following review will be.
-	</p>
-	<br />
+	{#if ready3}
+		<div
+			class="section-content-2"
+			in:fly={{ y: 100, duration: 500 }}
+			out:fly={{ y: 100, duration: 500 }}
+		>
+			<h1>How automatic scanning works</h1>
+			<br />
+			<p>
+				The following is a very basic explanation of how Home Stock works. For those who like to get
+				their hands dirty, Home Stock is fully open source and can be checked out here:
+			</p>
+			<ul>
+				<li>
+					<a class="basic-a" href="https://github.com/Human-First-Labs/home-stock">Frontend</a>
+				</li>
+				<li>
+					<a class="basic-a" href="https://github.com/Human-First-Labs/home-stock-api">Backend</a>
+				</li>
+			</ul>
+			<p>
+				In short, Home Stock asks the user to that a clear image of their receipt, and passes on
+				this image to a third party image recognition AI trained specifically to understand receipts
+				(kudos to <a class="basic-a" href="https://www.veryfi.com/">Veryfi</a>).
+			</p>
+			<br />
+			<p>
+				Using the information returned from this AI, Home Stock automatically links identical items
+				already registered in your system, and requests your review. During this review,
+				automatically linked items can be accepted immediately or ammended, and new items can be
+				added to your inventory with automatically generated information.
+			</p>
+			<br />
+			<p>
+				Finally, after approval, Home Stock takes note of any new items, and creates new automatic
+				linked items, in an attempt to make the next receipt scan ever easier.
+			</p>
+			<br />
+			<p>
+				It is expected that the review process will significantly longer every time new items, new
+				brands or new shops are introduced, however, the more you use Home Stock, the quicker the
+				following review will be.
+			</p>
+			<br />
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -313,6 +328,8 @@
 	.bigger-button {
 		font-size: 1.5em;
 		padding: 10px 20px;
+		background-color: var(--background-color);
+		color: var(--primary-color);
 	}
 
 	.feature-name {

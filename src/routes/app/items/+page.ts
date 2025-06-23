@@ -19,14 +19,10 @@ export const load = async ({ data, depends, fetch }) => {
         warningAmount: number;
         quantity: number;
     }) => {
-        try {
-            await apiSDK.items.createItem(item);
+        await apiSDK.items.createItem(item);
 
-            invalidate('app:items');
+        invalidate('app:items');
 
-        } catch (e) {
-            console.error(e);
-        }
     };
 
     const updateItem = async (id: string, item: {
@@ -34,30 +30,18 @@ export const load = async ({ data, depends, fetch }) => {
         warningAmount: number;
         quantity: number;
     }) => {
-        try {
-            await apiSDK.items.updateItem(id, item);
-            invalidate('app:items');
-        } catch (e) {
-            console.error(e);
-        }
+        await apiSDK.items.updateItem(id, item);
+        invalidate('app:items');
     };
 
     const updateItemQuantity = async (id: string, quantityChange: number) => {
-        try {
-            await apiSDK.items.updateItemQuantity(id, { quantityChange });
-            invalidate('app:items');
-        } catch (e) {
-            console.error(e);
-        }
+        await apiSDK.items.updateItemQuantity(id, { quantityChange });
+        invalidate('app:items');
     };
 
     const deleteItem = async (id: string) => {
-        try {
-            await apiSDK.items.deleteItem(id);
-            invalidate('app:items');
-        } catch (e) {
-            console.error(e);
-        }
+        await apiSDK.items.deleteItem(id);
+        invalidate('app:items');
     };
 
 

@@ -2,22 +2,35 @@
 	import type { PageProps } from './$types';
 
 	const { data }: PageProps = $props();
+
+	const disabled = $derived.by(() => {
+		if (!data.currentScan?.lines.length && (data.scanNumbers?.number || 0) >= 10) {
+			return true;
+		} else {
+			return false;
+		}
+	});
 </script>
 
 <div class="section column">
 	<h1>Welcome to HomeStock</h1>
-	{#if data.currentScan}
-		<p>Current Scan: {data.currentScan.lines.length} items</p>
-	{/if}
-	<a class="basic-a" href="/app/scan">
-		<button class="basic-button bigger">
-			{#if data.currentScan}
-				Continue Receipt Scan
-			{:else}
-				Scan Receipt
-			{/if}
-		</button>
-	</a>
+	<div class="column">
+		{#if data.currentScan}
+			<small>Current Scan: {data.currentScan.lines.length} items</small>
+		{/if}
+		<a class="basic-a" href="/app/scan">
+			<button class="basic-button bigger" {disabled}>
+				{#if data.currentScan}
+					Continue Receipt Scan
+				{:else}
+					Scan Receipt
+				{/if}
+			</button>
+		</a>
+		<small style="text-align: center; color: var(--text-color); width: 100%"
+			>({data.scanNumbers?.number || 0}/10 monthly scans)</small
+		>
+	</div>
 	<a class="basic-a" href="/app/items">
 		<button class="basic-button bigger"> Items </button>
 	</a>

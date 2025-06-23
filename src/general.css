@@ -5,3 +5,21 @@
 .basic-a {
 	color: var(--primary-color);
 }
+
+.basic-button {
+	background-color: var(--primary-color);
+	color: var(--primary-contrast-color);
+	font-size: 1em;
+	padding: 10px 20px;
+	display: flex;
+	width: fit-content;
+	text-align: center;
+	justify-content: center;
+}
+
+.basic-button:disabled {
+	background-color: var(--text-color);
+	color: var(--primary-contrast-color);
+	cursor: not-allowed;
+	opacity: 0.2;
+}

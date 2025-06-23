@@ -39,12 +39,13 @@
 		<button
 			class="hidden-button icon-button"
 			type="button"
-			onclick={() => {
+			onclick={async () => {
 				itemForm = true;
 				editItem = item.id;
 				itemTitle = item.title;
 				itemWarningAmount = item.warningAmount.toString();
 				itemQuantity = item.quantity.toString();
+				window.scrollTo(0, 0);
 			}}
 		>
 			<Icon icon="material-symbols:edit-outline-rounded" font-size={20} />
@@ -143,6 +144,7 @@
 		background-color: var(--text-color);
 		color: var(--primary-contrast-color);
 		cursor: not-allowed;
+		opacity: 0.2;
 	}
 
 	.btn-row {

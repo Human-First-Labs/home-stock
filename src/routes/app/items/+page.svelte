@@ -4,6 +4,7 @@
 	import type { PageProps } from './$types';
 	import ItemCard from '$lib/ItemCard.svelte';
 	import type { Item } from '$lib/api/types';
+	import Icon from '@iconify/svelte';
 
 	const { data }: PageProps = $props();
 
@@ -86,7 +87,14 @@
 
 <div class="section column">
 	<div class="row btn-row">
-		<h1>Item Management</h1>
+		<div class="row">
+			<a href="/app">
+				<button class="hidden-button" style="color: var(--primary-color);">
+					<Icon icon="material-symbols:arrow-back-rounded" font-size={32} />
+				</button>
+			</a>
+			<h1>Items</h1>
+		</div>
 		<button
 			class="basic-button action-button"
 			onclick={() => {
@@ -100,6 +108,7 @@
 	<p>Manage your items here. You can add, edit, and delete items from your inventory.</p>
 	{#if itemForm}
 		<div
+			id="item-form"
 			class="column"
 			style="gap: 20px"
 			in:slide={{ duration: 500 }}

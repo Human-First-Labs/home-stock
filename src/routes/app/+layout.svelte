@@ -30,6 +30,14 @@
 				<div class="section-content">
 					{@render children()}
 					<hr class="basic-hr" />
+					<button
+						class="basic-button bigger"
+						onclick={async () => {
+							await goto('/');
+						}}
+					>
+						Back to Site
+					</button>
 					<button class="basic-button bigger" onclick={logout}> Logout </button>
 					<p>Logged In with {data.supabaseData.user?.email}</p>
 				</div>

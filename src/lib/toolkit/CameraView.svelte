@@ -6,18 +6,26 @@
 	let video: HTMLVideoElement | null = null;
 	let ctx: CanvasRenderingContext2D | null = null;
 
-	const {
-		containingClass,
-		addImageLink,
-		skipConfirmation
-	}: {
+	export interface CameraViewProps {
+		onImageSave: (newLink: string) => void;
+		onImageDiscard?: () => void;
 		skipConfirmation?: boolean;
-		containingClass?: string;
-		addImageLink: (newLink: string) => void;
-	} = $props();
+		pauseOnImage?: boolean;
+		hideToggle?: boolean;
+		imageExtension?: 'png' | 'jpeg';
+	}
+
+	const {
+		onImageSave,
+		onImageDiscard,
+		skipConfirmation,
+		hideToggle,
+		pauseOnImage,
+		imageExtension
+	}: CameraViewProps = $props();
 
 	let error = $state('');
-	let mode = $state<'Taking' | 'Confirming'>('Taking');
+	let status = $state<'Taking' | 'Confirming' | 'Viewing'>('Taking');
 	const loading = $derived(canvas && webcamStream && video && ctx);
 	let currentCamera = $state<'environment' | 'user'>('environment');
 	let cameraAmount = $state(0);
@@ -86,7 +94,7 @@
 				savePhoto();
 			} else {
 				video.pause();
-				mode = 'Confirming';
+				status = 'Confirming';
 			}
 		}
 	};
@@ -101,16 +109,24 @@
 	const discardPhoto = () => {
 		if (video) {
 			video.play();
-			mode = 'Taking';
+			onImageDiscard && onImageDiscard();
+			status = 'Taking';
 		}
 	};
 
 	const savePhoto = () => {
 		if (webcamStream && ctx && video && canvas) {
 			ctx.drawImage(video, 0, 0);
-			addImageLink(canvas.toDataURL());
+			const url = canvas.toDataURL('image/' + (imageExtension || 'png'), 1); // 1 is the quality for jpeg, ignored for png
+			onImageSave(url);
 			video.play();
-			mode = 'Taking';
+
+			if (pauseOnImage) {
+				video.pause();
+				status = 'Viewing';
+			} else {
+				status = 'Taking';
+			}
 		}
 	};
 
@@ -141,37 +157,43 @@
 {/if}
 <div class={loading || error ? 'hide' : undefined}>
 	<canvas id="camera-canvas" class="hide"></canvas>
-	<div class={containingClass || 'camera-div'}>
+	<div class="camera-div">
 		<video
 			width="100%"
 			height="100%"
 			id="camera-view"
 			onclick={() => {
-				if (mode === 'Taking') {
+				if (status === 'Taking') {
 					takePhoto();
 				}
 			}}
 		>
 			<track kind="captions" />
 		</video>
-		{#if mode === 'Taking'}
-			<div class="next-instruction">
-				<div class="instruction">
-					<p>Click take photo</p>
-				</div>
-				<!-- {#if cameraAmount > 1} -->
-				<button class="next-instruction-part" onclick={toggleCamera}>
-					<p>Toggle Camera ({currentCamera + 1}/{cameraAmount})</p>
-				</button>
-				<!-- {/if} -->
+	</div>
+	<div class="bottom-drawer">
+		{#if status === 'Taking'}
+			<div class="taking-instructions">
+				<p>Click anywhere on the image to take a photo</p>
+				{#if cameraAmount > 1 && !hideToggle}
+					<button class="basic-button" onclick={toggleCamera}>
+						<p>Toggle Camera ({currentCamera + 1}/{cameraAmount})</p>
+					</button>
+				{/if}
 			</div>
-		{:else}
-			<div class="next-instruction">
-				<button class="next-instruction-part" onclick={discardPhoto}>
+		{:else if status === 'Confirming'}
+			<div class="confirm-instruction row">
+				<button class="basic-button" onclick={discardPhoto}>
 					<p>Discard</p>
 				</button>
-				<button class="next-instruction-part" onclick={savePhoto}>
+				<button class="basic-button" onclick={savePhoto}>
 					<p>Save</p>
+				</button>
+			</div>
+		{:else if status === 'Viewing'}
+			<div class="view-instruction row">
+				<button class="basic-button" onclick={discardPhoto}>
+					<p>Discard</p>
 				</button>
 			</div>
 		{/if}
@@ -183,32 +205,42 @@
 		display: none;
 	}
 	.camera-div {
-		position: relative;
-		width: 400px;
-		height: 600px;
 		background-color: black;
 	}
-	.instruction {
-		background-color: white;
-		color: black;
-		position: absolute;
-		left: 50%;
-		transform: translate(-50%, 0);
-		bottom: 40px;
-	}
-	.next-instruction {
+	.bottom-drawer {
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background-color: var(--background-color);
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
 		display: flex;
-		position: absolute;
-		left: 50%;
-		transform: translate(-50%, 0);
-		bottom: 40px;
-		justify-content: space-between;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		padding: 20px;
 	}
-	.next-instruction-part {
-		background-color: white;
-		color: black;
-		padding: 0 10px;
-		border: none;
+
+	.taking-instructions {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+		gap: 10px;
+	}
+
+	.confirm-instruction {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		gap: 10px;
+	}
+
+	.view-instruction {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		gap: 10px;
 	}
 	.error {
 		color: red;

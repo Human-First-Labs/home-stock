@@ -15,23 +15,14 @@ export const load = async ({ data, depends, fetch }) => {
     }
 
     const generateShoppingList = async () => {
-        try {
-            await apiSDK.items.generateShoppingList()
+        await apiSDK.items.generateShoppingList()
 
-            invalidate('app:shopping-lists');
-
-        } catch (e) {
-            console.error(e);
-        }
+        invalidate('app:shopping-lists');
     };
 
     const deleteShoppingList = async (id: string) => {
-        try {
-            await apiSDK.items.deleteShoppingList(id);
-            invalidate('app:shopping-lists');
-        } catch (e) {
-            console.error(e);
-        }
+        await apiSDK.items.deleteShoppingList(id);
+        invalidate('app:shopping-lists');
     };
 
 

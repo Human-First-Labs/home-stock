@@ -5,6 +5,7 @@
 	import type { ShoppingList } from '$lib/api/types';
 	import type { PageProps } from './$types';
 	import ShoppingListCard from '$lib/ShoppingListCard.svelte';
+	import Icon from '@iconify/svelte';
 
 	const { data }: PageProps = $props();
 
@@ -18,7 +19,14 @@
 
 <div class="section column">
 	<div class="row btn-row">
-		<h1>Shopping List Management</h1>
+		<div class="row">
+			<a href="/app">
+				<button class="hidden-button" style="color: var(--primary-color);">
+					<Icon icon="material-symbols:arrow-back-rounded" font-size={32} />
+				</button>
+			</a>
+			<h1>Shopping List Management</h1>
+		</div>
 		<button
 			class="basic-button action-button"
 			onclick={async () => {
@@ -118,7 +126,6 @@
 		font-size: 1em;
 		padding: 10px 20px;
 		display: flex;
-		width: 150px;
 		text-align: center;
 		justify-content: center;
 	}

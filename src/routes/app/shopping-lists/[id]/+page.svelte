@@ -26,7 +26,12 @@
 </script>
 
 <div class="section column">
-	<div class="row btn-row">
+	<div class="row">
+		<a href="/app">
+			<button class="hidden-button" style="color: var(--primary-color);">
+				<Icon icon="material-symbols:arrow-back-rounded" font-size={32} />
+			</button>
+		</a>
 		<h1>
 			Shopping list - {data.shoppingList
 				? DateTime.fromISO(data.shoppingList?.createdAt).toFormat('dd/mm/yyyy')
@@ -47,8 +52,8 @@
 				<div class="column">
 					<h3>{item.title}</h3>
 				</div>
-				<p>Amount in storage: {item.currentQuantity}</p>
-				<p>Warning amount: {item.warningAmount}</p>
+				<p>Current: {item.currentQuantity}</p>
+				<p>Warning: {item.warningAmount}</p>
 				<div class="column">
 					{#if item.state === 'done'}
 						<button
@@ -84,17 +89,10 @@
 		width: 100%;
 	}
 
-	.btn-row {
-		width: 100%;
-		display: flex;
-		justify-content: space-between;
-		gap: 10px;
-	}
-
 	.absolute-positioning {
 		position: absolute;
 		top: -10;
 		left: 0;
-		width: 95%;
+		width: 90%;
 	}
 </style>
