@@ -14,7 +14,5 @@
 	<meta name="description" content={`The ${appName} Web App`} />
 </svelte:head>
 
-<div style="min-height: 95.5vh">
-	{@render children()}
-</div>
+{@render children()}
 <Footer />

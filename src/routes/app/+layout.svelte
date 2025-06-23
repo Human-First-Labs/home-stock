@@ -40,6 +40,7 @@
 
 <style>
 	.content {
+		min-height: calc(100vh - 58px);
 		padding-top: 20px;
 		padding-bottom: 40px;
 		max-width: var(--max-site-width);
