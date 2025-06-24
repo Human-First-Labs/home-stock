@@ -19,21 +19,21 @@ export const itemService = (fetch: Fetch) => {
                 item: Item | undefined
             }>
         },
-        createItemFromReceiptLine: async (receiptProduct: {
-            title: string,
-            warningAmount: number,
-            quantity: number,
-            receiptLineId: string,
-        }) => {
-            return (await fetch(PUBLIC_API_URL + '/create/item/from-receipt-line', {
-                'method': 'POST',
-                body: JSON.stringify(
-                    receiptProduct
-                )
-            })).json() as Promise<{
-                item: Item | undefined
-            }>
-        },
+        // createItemFromReceiptLine: async (receiptProduct: {
+        //     title: string,
+        //     warningAmount: number,
+        //     quantity: number,
+        //     receiptLineId: string,
+        // }) => {
+        //     return (await fetch(PUBLIC_API_URL + '/create/item/from-receipt-line', {
+        //         'method': 'POST',
+        //         body: JSON.stringify(
+        //             receiptProduct
+        //         )
+        //     })).json() as Promise<{
+        //         item: Item | undefined
+        //     }>
+        // },
         updateItem: async (id: string, product: {
             title?: string,
             warningAmount?: number,

@@ -10,25 +10,12 @@
 			warningAmount: number;
 			quantity: number;
 		};
-		itemForm: boolean;
-		editItem: string | undefined;
-		itemTitle: string;
-		itemWarningAmount: string;
-		itemQuantity: string;
 		deleteFunction: () => void;
 		quantityChangeFunction: (change: number) => Promise<void>;
+		onEditClick: () => void;
 	}
 
-	let {
-		item,
-		itemForm = $bindable(),
-		editItem = $bindable(),
-		itemTitle = $bindable(),
-		itemWarningAmount = $bindable(),
-		itemQuantity = $bindable(),
-		deleteFunction,
-		quantityChangeFunction
-	}: ItemCardProps = $props();
+	let { item, deleteFunction, quantityChangeFunction, onEditClick }: ItemCardProps = $props();
 
 	let quantityLoading = $state(false);
 </script>
@@ -36,18 +23,7 @@
 <div class="item-card" in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}>
 	<div class="row btn-row">
 		<h2>{item.title}</h2>
-		<button
-			class="hidden-button icon-button"
-			type="button"
-			onclick={async () => {
-				itemForm = true;
-				editItem = item.id;
-				itemTitle = item.title;
-				itemWarningAmount = item.warningAmount.toString();
-				itemQuantity = item.quantity.toString();
-				window.scrollTo(0, 0);
-			}}
-		>
+		<button class="hidden-button icon-button" type="button" onclick={onEditClick}>
 			<Icon icon="material-symbols:edit-outline-rounded" font-size={20} />
 		</button>
 	</div>

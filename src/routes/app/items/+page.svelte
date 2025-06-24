@@ -1,10 +1,11 @@
 <script lang="ts">
 	import Spinner from '$lib/toolkit/svgs/Spinner.svelte';
-	import { fade, slide } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import type { PageProps } from './$types';
 	import ItemCard from '$lib/ItemCard.svelte';
 	import type { Item } from '$lib/api/types';
 	import Icon from '@iconify/svelte';
+	import ItemForm from '$lib/ItemForm.svelte';
 
 	const { data }: PageProps = $props();
 
@@ -15,13 +16,9 @@
 	let deleteItem = $state<Item>();
 
 	let itemTitle = $state('');
-	let titleError = $state('');
 	let itemWarningAmount = $state('');
 	let itemQuantity = $state('');
-	let quantityError = $state('');
 
-	let generalItemError = $state('');
-	let itemSaveLoading = $state(false);
 	let deleteLoading = $state(false);
 	let deleteError = $state<string | null>(null);
 
@@ -38,51 +35,6 @@
 				item.id.toLowerCase().includes(lowerSearch)
 		);
 	});
-
-	const saveItem = async () => {
-		let stop = false;
-		if (!itemTitle) {
-			titleError = 'Please enter a title for the item';
-			stop = true;
-		} else {
-			titleError = '';
-		}
-		if (!itemQuantity || parseInt(itemQuantity) < 0) {
-			quantityError = 'Please enter a valid quantity';
-			stop = true;
-		} else {
-			quantityError = '';
-		}
-
-		if (stop) {
-			return;
-		}
-
-		itemSaveLoading = true;
-		try {
-			if (editItem) {
-				await data.updateItem(editItem, {
-					title: itemTitle,
-					warningAmount: itemWarningAmount ? parseInt(itemWarningAmount) : 0,
-					quantity: parseInt(itemQuantity)
-				});
-			} else {
-				await data.createItem({
-					title: itemTitle,
-					warningAmount: itemWarningAmount ? parseInt(itemWarningAmount) : 0,
-					quantity: parseInt(itemQuantity)
-				});
-			}
-		} catch (e) {
-			console.error('Error saving item:', e);
-			generalItemError = 'An error occurred while saving the item. Please try again.';
-		}
-		itemSaveLoading = false;
-		itemForm = false;
-		itemTitle = '';
-		itemWarningAmount = '';
-		itemQuantity = '';
-	};
 </script>
 
 <div class="section column">
@@ -96,7 +48,7 @@
 			<h1>Items</h1>
 		</div>
 		<button
-			class="basic-button action-button"
+			class="basic-button"
 			onclick={() => {
 				itemForm = true;
 				editItem = '';
@@ -107,75 +59,15 @@
 	</div>
 	<p>Manage your items here. You can add, edit, and delete items from your inventory.</p>
 	{#if itemForm}
-		<div
-			id="item-form"
-			class="column"
-			style="gap: 20px"
-			in:slide={{ duration: 500 }}
-			out:slide={{ duration: 500 }}
-		>
-			<hr class="basic-hr" />
-			<div class="row btn-row">
-				<h2>
-					{#if editItem}
-						Edit Item
-					{:else}
-						Add New Item
-					{/if}
-				</h2>
-			</div>
-			<div class="row form-row">
-				<div class="column">
-					<input class="basic-field" type="text" placeholder="Title" bind:value={itemTitle} />
-					{#if titleError}
-						<small class="error-message">{titleError}</small>
-					{/if}
-				</div>
-				<div class="column">
-					<input
-						class="basic-field"
-						type="number"
-						placeholder="Warning Quantity"
-						bind:value={itemWarningAmount}
-					/>
-				</div>
-				<div class="column">
-					<input
-						class="basic-field"
-						type="number"
-						placeholder="Current Quantity"
-						bind:value={itemQuantity}
-					/>
-					{#if quantityError}
-						<small class="error-message">{quantityError}</small>
-					{/if}
-				</div>
-			</div>
-			<div class="row btn-row">
-				<button
-					class="basic-button action-button"
-					onclick={() => {
-						itemForm = false;
-						itemTitle = '';
-						itemWarningAmount = '';
-						itemQuantity = '';
-					}}
-				>
-					Cancel
-				</button>
-				<button class="basic-button action-button" onclick={saveItem}>
-					{#if itemSaveLoading}
-						<Spinner />
-					{:else}
-						Save
-					{/if}
-				</button>
-			</div>
-			{#if generalItemError}
-				<small class="error-message">{generalItemError}</small>
-			{/if}
-			<hr class="basic-hr" />
-		</div>
+		<ItemForm
+			bind:itemForm
+			bind:editItem
+			bind:itemTitle
+			bind:itemWarningAmount
+			bind:itemQuantity
+			createItem={data.createItem}
+			updateItem={data.updateItem}
+		/>
 	{/if}
 	{#if items && items.length > 0}
 		<p>Currently, you have {items.length} items in your inventory.</p>
@@ -188,11 +80,14 @@
 					deleteFunction={async () => {
 						deleteItem = item;
 					}}
-					bind:itemForm
-					bind:editItem
-					bind:itemTitle
-					bind:itemWarningAmount
-					bind:itemQuantity
+					onEditClick={() => {
+						itemForm = true;
+						editItem = item.id;
+						itemTitle = item.title;
+						itemWarningAmount = item.warningAmount.toString();
+						itemQuantity = item.quantity.toString();
+						window.scrollTo(0, 0);
+					}}
 					{item}
 					quantityChangeFunction={async (change: number) => {
 						await data.updateItemQuantity(item.id, change);
@@ -211,7 +106,7 @@
 			<p>Are you sure you want to delete the item "{deleteItem.title}"?</p>
 			<div class="btn-row">
 				<button
-					class="basic-button action-button"
+					class="basic-button"
 					onclick={() => {
 						deleteItem = undefined;
 					}}
@@ -219,7 +114,7 @@
 					Cancel
 				</button>
 				<button
-					class="basic-button action-button"
+					class="basic-button"
 					onclick={async () => {
 						if (deleteItem) {
 							deleteLoading = true;
@@ -260,37 +155,9 @@
 		gap: 10px;
 	}
 
-	.action-button {
-		background-color: var(--primary-color);
-		color: var(--primary-contrast-color);
-		font-size: 1em;
-		padding: 10px 20px;
-		display: flex;
-		width: 150px;
-		text-align: center;
-		justify-content: center;
-	}
-
 	.item-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 		gap: 20px;
-	}
-
-	.form-row {
-		display: flex;
-		gap: 20px;
-	}
-
-	.popup {
-		background-color: var(--background-color);
-		border-radius: 10px;
-		padding: 20px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-		width: 400px;
-
-		> h2 {
-			color: var(--primary-color);
-		}
 	}
 </style>

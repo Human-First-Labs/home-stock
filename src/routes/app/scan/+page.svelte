@@ -23,7 +23,18 @@
 		<h1>Receipt Scanning</h1>
 	</div>
 	{#if data.currentScan}
-		<ScanView scan={data.currentScan} />
+		<ScanView
+			scan={data.currentScan}
+			cancelScan={() => {
+				return data.cancelScan(data.currentScan!.id);
+			}}
+			bulkConfirmFunc={() => {
+				return data.bulkConfirmFunc(data.currentScan!.id);
+			}}
+			items={data.items || []}
+			confirmLine={data.confirmScanLine}
+			createItem={data.createItem}
+		/>
 	{:else if data.scanNumbers?.number && data.scanNumbers?.number >= 10}
 		<p>
 			You have reached the maximum number of scans for this month. Please wait until next month to

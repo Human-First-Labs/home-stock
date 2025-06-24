@@ -16,7 +16,9 @@
 	<h1>Welcome to HomeStock</h1>
 	<div class="column">
 		{#if data.currentScan}
-			<small>Current Scan: {data.currentScan.lines.length} items</small>
+			<small style="text-align: center; color: var(--text-color); width: 100%"
+				>Current Scan: {data.currentScan.lines.length} items</small
+			>
 		{/if}
 		<a class="basic-a" href="/app/scan">
 			<button class="basic-button bigger" {disabled}>

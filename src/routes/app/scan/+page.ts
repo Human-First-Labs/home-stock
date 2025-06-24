@@ -1,5 +1,6 @@
 import { invalidate } from "$app/navigation";
 import { getSDK } from "$lib/api";
+import type { ActionedInfoLine, ReceiptLineType } from "$lib/api/receipt-service";
 
 export const load = async ({ data, fetch, depends }) => {
     const apiSDK = getSDK(fetch, data.session?.access_token || '')
@@ -8,6 +9,7 @@ export const load = async ({ data, fetch, depends }) => {
 
     let currentScan
     let scanNumbers
+    let items
 
     if (data.session) {
         try {
@@ -28,6 +30,15 @@ export const load = async ({ data, fetch, depends }) => {
         } catch (e) {
             console.error(e)
         }
+
+        try {
+            const result = await apiSDK.items.getItems()
+
+            items = result.items;
+
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     const uploadScan = async (base64: string, extension: string) => {
@@ -38,9 +49,44 @@ export const load = async ({ data, fetch, depends }) => {
         invalidate('app:currentScan');
     }
 
+    const cancelScan = async (id: string) => {
+        await apiSDK.receipt.cancelReceiptScan(id);
+        invalidate('app:currentScan');
+    }
+
+    const bulkConfirmFunc = async (id: string) => {
+        await apiSDK.receipt.confirmReceipt(id)
+        invalidate('app:currentScan');
+    }
+
+    const confirmScanLine = async (id: string, data: {
+        actionedInfo: ActionedInfoLine;
+        line: ReceiptLineType;
+    }) => {
+        await apiSDK.receipt.confirmReceiptLine(id, data)
+        invalidate('app:currentScan');
+    }
+
+    const createItem = async (item: {
+        title: string;
+        warningAmount: number;
+        quantity: number;
+    }) => {
+        await apiSDK.items.createItem(item);
+
+        invalidate('app:items');
+
+    };
+
+
     return {
         currentScan,
         scanNumbers,
-        uploadScan
+        items,
+        uploadScan,
+        cancelScan,
+        bulkConfirmFunc,
+        confirmScanLine,
+        createItem
     };
 }
