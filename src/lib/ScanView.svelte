@@ -6,6 +6,7 @@
 	import { fade } from 'svelte/transition';
 	import ScanLineForm from './ScanLineForm.svelte';
 	import type { Item } from './api/types';
+	import { goto } from '$app/navigation';
 
 	export interface ScanViewProps {
 		scan: {
@@ -14,7 +15,7 @@
 		};
 		cancelScan: () => Promise<void>;
 		bulkConfirmFunc: () => Promise<void>;
-		createItem: (data: { title: string; warningAmount: number; quantity: number }) => Promise<void>;
+		createItem: (data: { title: string; warningAmount: number; quantity: number }) => Promise<Item>;
 		confirmLine: (
 			id: string,
 			data: {
@@ -73,7 +74,7 @@
 		receipt scan must be fully completed before a new one can be started.
 	</p>
 
-	<p>
+	<p id="scan-form">
 		Progress: {completedLines.length}/{scan.lines.length}
 	</p>
 	{#if formShow && actionLine}
@@ -107,10 +108,10 @@
 		<div class="column item-grid">
 			{#each pendingLines as line (line.title)}
 				<ScanLineCard
-					confirmAction={() => {
+					confirmAction={async () => {
 						formShow = true;
 						actionLine = line;
-						window.scrollTo(0, 0);
+						window.location.href = `#scan-form`;
 					}}
 					scanLine={line}
 				/>

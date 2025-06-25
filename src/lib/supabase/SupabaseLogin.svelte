@@ -108,7 +108,7 @@
 			<h4>Please check your inbox and enter the code below.</h4>
 			<div class="column">
 				<input
-					class="basic-field"
+					class="basic-input"
 					type="text"
 					placeholder="One Time Login Code"
 					name="emailCode"
@@ -140,7 +140,7 @@
 			<h4>Login with your email below, to start wasting less, and having more!</h4>
 			<div class="column">
 				<input
-					class="basic-field"
+					class="basic-input"
 					type="email"
 					placeholder="Email Address"
 					name="emailAddress"

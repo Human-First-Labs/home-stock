@@ -87,38 +87,44 @@
 	in:slide={{ duration: 500 }}
 	out:slide={{ duration: 500 }}
 >
-	<hr class="basic-hr" />
-	<div class="row btn-row">
-		<h2>
-			{#if editItem}
-				Edit Item
-			{:else}
-				Add New Item
-			{/if}
-		</h2>
-	</div>
-	<div class="row form-row">
+	<div class="column form">
 		<div class="column">
-			<input class="basic-field" type="text" placeholder="Title" bind:value={itemTitle} />
+			<label for="item-title">Title</label>
+			<input
+				id="item-title"
+				class="basic-input"
+				type="text"
+				placeholder="Title"
+				bind:value={itemTitle}
+				style="flex:1"
+			/>
 			{#if titleError}
 				<small class="error-message">{titleError}</small>
 			{/if}
 		</div>
-		<div class="column">
-			<input
-				class="basic-field"
-				type="number"
-				placeholder="Warning Quantity"
-				bind:value={itemWarningAmount}
-			/>
-		</div>
-		<div class="column">
-			<input
-				class="basic-field"
-				type="number"
-				placeholder="Current Quantity"
-				bind:value={itemQuantity}
-			/>
+		<div class="row" style="gap: 10px; flex: 1;">
+			<div class="column" style="flex: 1; min-width: 150px">
+				<label for="item-warning-amount">Warning Amount</label>
+				<input
+					id="item-warning-amount"
+					class="basic-input"
+					type="number"
+					placeholder="Warning Quantity"
+					bind:value={itemWarningAmount}
+					style="flex: 1; "
+				/>
+			</div>
+			<div class="column" style="flex: 1;  min-width: 150px">
+				<label for="item-quantity">Current Quantity</label>
+				<input
+					id="item-quantity"
+					class="basic-input"
+					type="number"
+					placeholder="Current Quantity"
+					bind:value={itemQuantity}
+					style="flex: 1; "
+				/>
+			</div>
 			{#if quantityError}
 				<small class="error-message">{quantityError}</small>
 			{/if}
@@ -147,11 +153,10 @@
 	{#if generalItemError}
 		<small class="error-message">{generalItemError}</small>
 	{/if}
-	<hr class="basic-hr" />
 </div>
 
 <style>
-	.form-row {
+	.form {
 		display: flex;
 		gap: 20px;
 	}

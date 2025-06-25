@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
+	import { fade, slide } from 'svelte/transition';
 	import Spinner from './toolkit/svgs/Spinner.svelte';
 	import type { ActionedInfoLine, ReceiptLineType } from './api/receipt-service';
 	import type { Item } from './api/types';
 	import Checkbox from './toolkit/Checkbox.svelte';
 	import AutocompleteField from './toolkit/AutocompleteField.svelte';
+	import ItemForm from './ItemForm.svelte';
 
 	export interface ScanLineFormProps {
 		showForm: boolean;
 		line: ReceiptLineType;
-		createItem: (data: { title: string; warningAmount: number; quantity: number }) => Promise<void>;
+		createItem: (data: { title: string; warningAmount: number; quantity: number }) => Promise<Item>;
 		confirmLine: (
 			id: string,
 			data: {
@@ -29,7 +30,21 @@
 	}: ScanLineFormProps = $props();
 
 	let generalLineError = $state('');
+	let autocompleteValue = $derived.by(() => {
+		return line.actionableInfo.existingItemId
+			? {
+					id: line.actionableInfo.existingItemId,
+					label: line.actionableInfo.existingItemTitle || ''
+				}
+			: undefined;
+	});
 	let lineSaveLoading = $state(false);
+
+	let showItemForm = $state(false);
+
+	let itemTitle = $state('');
+	let itemWarningAmount = $state('');
+	let itemQuantity = $state('');
 
 	const confirmLineFunc = async () => {
 		let stop = false;
@@ -66,6 +81,10 @@
 	<div class="row btn-row">
 		<h2>Scan Line Action Information</h2>
 	</div>
+	<p>
+		Here you will decide what to do with the scan line. This information is kept for when this scan
+		line is encountered again in the future, and this action will be detected automatically.
+	</p>
 	<div class="row form-row">
 		<div class="column">
 			<Checkbox
@@ -84,9 +103,11 @@
 		</div>
 		{#if !line.actionableInfo.ignore}
 			<div class="column">
+				<label for="item-selection"> Linked Item </label>
 				<AutocompleteField
+					id="item-selection"
 					name="Item Selection"
-					placeholder="Select an existing item or create a new one"
+					placeholder="Connect to item"
 					options={items.map((item) => ({
 						id: item.id,
 						label: item.title
@@ -100,7 +121,10 @@
 							line.actionableInfo.existingItemTitle = undefined;
 						}
 					}}
-					value={line.actionableInfo.existingItemTitle || ''}
+					bind:value={autocompleteValue}
+					oncreatenew={() => {
+						showItemForm = true;
+					}}
 				/>
 			</div>
 		{:else}
@@ -129,6 +153,29 @@
 		<small class="error-message">{generalLineError}</small>
 	{/if}
 </div>
+
+{#if showItemForm}
+	<div class="cover">
+		<div class="popup" in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}>
+			<p>
+				Create a new item to connect to this scan line. This item will be saved in your inventory.
+				The current quantity here will be <strong>added</strong> to the quantity coming from the scan.
+			</p>
+			<ItemForm
+				bind:itemForm={showItemForm}
+				bind:itemTitle
+				bind:itemWarningAmount
+				bind:itemQuantity
+				createItem={async (data) => {
+					await createItem(data);
+					showItemForm = false;
+					line.actionableInfo.existingItemId = undefined;
+					line.actionableInfo.existingItemTitle = data.title;
+				}}
+			/>
+		</div>
+	</div>
+{/if}
 
 <style>
 	.form-row {

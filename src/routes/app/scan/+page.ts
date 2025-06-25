@@ -72,9 +72,12 @@ export const load = async ({ data, fetch, depends }) => {
         warningAmount: number;
         quantity: number;
     }) => {
-        await apiSDK.items.createItem(item);
+        const resultItem = await apiSDK.items.createItem(item);
 
+        invalidate('app:currentScan');
         invalidate('app:items');
+
+        return resultItem
 
     };
 

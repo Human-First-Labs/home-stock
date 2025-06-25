@@ -11,6 +11,7 @@
 	}
 
 	export interface AutocompleteFieldProps {
+		id?: string;
 		/** The name of the input */
 		name?: string;
 		/** The placeholder of the input */
@@ -21,14 +22,18 @@
 		options: AutocompleteOption[];
 		/** The function to call when an option is selected */
 		onselect?: (value: AutocompleteOption) => void;
+		/** The function to call when a new option is created */
+		oncreatenew?: () => void;
 	}
 
 	let {
+		id,
 		name,
 		value = $bindable(),
 		placeholder,
 		options,
-		onselect
+		onselect,
+		oncreatenew
 	}: AutocompleteFieldProps = $props();
 
 	let ref: HTMLElement | null = $state(null);
@@ -76,7 +81,7 @@
 	}}
 	style="flex: 1"
 >
-	<input {name} bind:value style="display: none" />
+	<input {id} {name} bind:value style="display: none" />
 	<div class="row basic-input" bind:this={ref}>
 		<input
 			{placeholder}
@@ -126,6 +131,22 @@
 						</div>
 					{/if}
 				</div>
+				{#if oncreatenew}
+					<button
+						class="hidden-button"
+						onclick={() => {
+							oncreatenew && oncreatenew();
+							openDropdown = false;
+						}}
+						type="button"
+						style="padding-top: 0.5em;"
+					>
+						<div class="row" style="gap: 10px; padding: 5px;">
+							<Icon icon="material-symbols:add" font-size={18} />
+							<p>Create New</p>
+						</div>
+					</button>
+				{/if}
 				<hr />
 				<div class="column scrollable">
 					{#if visibleOptions.length === 0}

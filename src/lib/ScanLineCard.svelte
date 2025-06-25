@@ -97,6 +97,7 @@
 		flex-direction: column;
 		gap: 10px;
 		justify-content: space-between;
+		justify-self: center;
 	}
 
 	.item-card h2 {

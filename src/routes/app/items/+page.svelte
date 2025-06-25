@@ -57,8 +57,20 @@
 			New Item
 		</button>
 	</div>
-	<p>Manage your items here. You can add, edit, and delete items from your inventory.</p>
+	<p id="item-form">
+		Manage your items here. You can add, edit, and delete items from your inventory.
+	</p>
 	{#if itemForm}
+		<hr class="basic-hr" />
+		<div class="row btn-row">
+			<h2>
+				{#if editItem}
+					Edit Item
+				{:else}
+					Add New Item
+				{/if}
+			</h2>
+		</div>
 		<ItemForm
 			bind:itemForm
 			bind:editItem
@@ -68,11 +80,12 @@
 			createItem={data.createItem}
 			updateItem={data.updateItem}
 		/>
+		<hr class="basic-hr" />
 	{/if}
 	{#if items && items.length > 0}
 		<p>Currently, you have {items.length} items in your inventory.</p>
 		<div class="row">
-			<input class="basic-field" type="text" placeholder="Search items..." bind:value={search} />
+			<input class="basic-input" type="text" placeholder="Search items..." bind:value={search} />
 		</div>
 		<div class="column item-grid">
 			{#each searchItems as item (item.id)}
@@ -86,7 +99,7 @@
 						itemTitle = item.title;
 						itemWarningAmount = item.warningAmount.toString();
 						itemQuantity = item.quantity.toString();
-						window.scrollTo(0, 0);
+						window.location.href = '#item-form';
 					}}
 					{item}
 					quantityChangeFunction={async (change: number) => {

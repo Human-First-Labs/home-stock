@@ -22,6 +22,7 @@ small {
 	--error-color: red;
 	--warning-color: orange;
 	--success-color: green;
+	--light-grey-background-color: #f0f0f0;
 }
 
 .normal-button {
@@ -71,7 +72,7 @@ body {
 	display: flex;
 }
 
-.basic-field {
+.basic-input {
 	display: flex;
 	padding: 0.5rem;
 	border: 1px solid var(--text-color);
@@ -136,15 +137,6 @@ body {
 	h4 {
 		color: var(--primary-contrast-color);
 	}
-}
-
-.basic-input {
-	border: 1px solid var(--light-grey-background-color);
-	border-radius: 10px;
-	background-color: rgba(255, 255, 255, 0.2);
-	padding: 10px;
-	height: 44px;
-	gap: 10px;
 }
 
 .basic-textarea {

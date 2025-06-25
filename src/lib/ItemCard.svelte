@@ -94,6 +94,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
+		justify-self: center;
 	}
 
 	.item-card h2 {
