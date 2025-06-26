@@ -1,0 +1,200 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+small {
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--general-font: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	--primary-color: #4a90e2;
+	--secondary-color: #a088f9;
+	--accent-color: #d4af37;
+	--text-color: #5c5c5c;
+	--primary-contrast-color: #f8f8f8;
+	--secondary-contrast-color: #d3d3d3;
+	--background-color: #eeeeee;
+	--error-color: red;
+	--warning-color: orange;
+	--success-color: green;
+	--light-grey-background-color: #f0f0f0;
+}
+
+.normal-button {
+	background-color: var(--primary-color);
+	color: var(--primary-contrast-color);
+	padding: 10px 20px;
+	width: 100%;
+	border: 0;
+	border-radius: 5px;
+	justify-content: center;
+	cursor: pointer;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	/* height: 100%; */
+	display: flex;
+	flex-direction: column;
+	color: var(--text-color);
+}
+
+.row {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+}
+
+.hidden-button {
+	background-color: transparent;
+	cursor: pointer;
+	border: 0;
+	display: flex;
+}
+
+.hidden-input {
+	background-color: transparent;
+	border: 0;
+	outline: none;
+	display: flex;
+}
+
+.basic-input {
+	display: flex;
+	padding: 0.5rem;
+	border: 1px solid var(--text-color);
+	border-radius: 0.25rem;
+	background-color: transparent;
+}
+
+* {
+	scroll-behavior: smooth;
+	box-sizing: border-box;
+	font-family: var(--general-font);
+}
+
+.basic-a {
+	text-decoration: none;
+	color: var(--text-color);
+}
+
+.basic-button {
+	cursor: pointer;
+	border: 0;
+	border-radius: 2em;
+	font-weight: 700;
+	font-family: var(--general-font);
+	display: flex;
+}
+
+.primary-button {
+	cursor: pointer;
+	border: 0;
+	border-radius: 2em;
+	font-weight: 700;
+	font-family: var(--general-font);
+	display: flex;
+	background-color: var(--primary-color);
+	color: var(--primary-contrast-color);
+}
+
+.error-message {
+	color: var(--error-color);
+}
+
+.basic-hr {
+	width: 100%;
+	border: 0.2px solid var(--text-color);
+	margin: 15px 0 15px 0;
+}
+
+.popup {
+	display: flex;
+	background-color: var(--primary-color);
+	align-items: center;
+	flex-direction: column;
+	border-radius: 16px;
+	max-width: 60%;
+	padding: 20px;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+	text-align: center;
+	gap: 20px;
+
+	& > h2,
+	h4 {
+		color: var(--primary-contrast-color);
+	}
+}
+
+.basic-textarea {
+	border: 1px solid var(--light-grey-background-color);
+	border-radius: 10px;
+	background-color: rgba(255, 255, 255, 0.2);
+	padding: 10px;
+	gap: 10px;
+}
+
+.cover {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	z-index: 9;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	border: none;
+	overflow: auto;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	background-color: var(--background-color);
+	box-shadow:
+		0 4px 8px 0 rgba(0, 0, 0, 0.2),
+		0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	border-radius: 16px;
+	padding: 10px;
+}
+
+.computer-only-row {
+	display: flex;
+	flex-direction: row;
+}
+
+input {
+	min-width: 0;
+}
+
+@media screen and (min-width: 1000px) {
+	.hidden-on-computer {
+		display: none !important;
+	}
+}
+
+@media screen and (max-width: 1000px) {
+	.hidden-on-mobile {
+		display: none !important;
+	}
+	.computer-only-row {
+		flex-direction: column;
+		align-items: center;
+	}
+}
