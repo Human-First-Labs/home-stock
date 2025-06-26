@@ -1,10 +1,8 @@
 import type { Fetch } from "@supabase/supabase-js/dist/module/lib/types"
-import type { Item } from "./types"
 import { PUBLIC_API_URL } from '$env/static/public';
 
 export interface ActionedInfoLine {
-    differentItemId?: string
-    newItem?: Partial<Item>
+    itemId?: string
     ignore?: boolean
 }
 

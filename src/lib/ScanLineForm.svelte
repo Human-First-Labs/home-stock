@@ -6,11 +6,15 @@
 	import Checkbox from './toolkit/Checkbox.svelte';
 	import AutocompleteField from './toolkit/AutocompleteField.svelte';
 	import ItemForm from './ItemForm.svelte';
+	import { clickOutside } from './toolkit';
 
 	export interface ScanLineFormProps {
+		scanId: string;
 		showForm: boolean;
 		line: ReceiptLineType;
-		createItem: (data: { title: string; warningAmount: number; quantity: number }) => Promise<Item>;
+		createItem: (data: { title: string; warningAmount: number; quantity: number }) => Promise<{
+			item: Item;
+		}>;
 		confirmLine: (
 			id: string,
 			data: {
@@ -22,6 +26,7 @@
 	}
 
 	let {
+		scanId,
 		showForm = $bindable(),
 		line = $bindable(),
 		createItem,
@@ -61,7 +66,15 @@
 
 		lineSaveLoading = true;
 		try {
-			//TODO this needs implementation
+			await confirmLine(scanId, {
+				actionedInfo: {
+					itemId: line.actionableInfo.existingItemId,
+					ignore: line.actionableInfo.ignore
+				},
+				line
+			});
+			showForm = false;
+			generalLineError = '';
 		} catch (e) {
 			console.error('Error saving item:', e);
 			generalLineError = 'An error occurred while saving the item. Please try again.';
@@ -156,7 +169,12 @@
 
 {#if showItemForm}
 	<div class="cover">
-		<div class="popup" in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}>
+		<div
+			class="popup"
+			in:fade={{ duration: 300 }}
+			out:fade={{ duration: 300 }}
+			use:clickOutside={{ callbackFunction: () => (showItemForm = false) }}
+		>
 			<p>
 				Create a new item to connect to this scan line. This item will be saved in your inventory.
 				The current quantity here will be <strong>added</strong> to the quantity coming from the scan.
@@ -167,10 +185,10 @@
 				bind:itemWarningAmount
 				bind:itemQuantity
 				createItem={async (data) => {
-					await createItem(data);
+					const result = await createItem(data);
 					showItemForm = false;
-					line.actionableInfo.existingItemId = undefined;
-					line.actionableInfo.existingItemTitle = data.title;
+					line.actionableInfo.existingItemId = result.item.id;
+					line.actionableInfo.existingItemTitle = result.item.title;
 				}}
 			/>
 		</div>

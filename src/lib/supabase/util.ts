@@ -78,7 +78,11 @@ export const generateSupabaseHandler = (args: { supabaseUrl: string; supabaseKey
 				 */
 				setAll: (cookiesToSet) => {
 					cookiesToSet.forEach(({ name, value, options }) => {
-						event.cookies.set(name, value, { ...options, path: '/' });
+						try {
+							event.cookies.set(name, value, { ...options, path: '/' });
+						} catch (e) {
+							console.error('Error setting cookie:', e);
+						}
 					});
 				}
 			}

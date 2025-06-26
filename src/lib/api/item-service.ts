@@ -16,7 +16,7 @@ export const itemService = (fetch: Fetch) => {
                     product
                 )
             })).json() as Promise<{
-                item: Item | undefined
+                item: Item
             }>
         },
         // createItemFromReceiptLine: async (receiptProduct: {

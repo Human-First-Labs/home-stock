@@ -59,7 +59,7 @@
 	}: TargetDivProps = $props();
 
 	let position = $state<Position | null>(null);
-	let ref: HTMLDivElement;
+	let ref: HTMLDivElement | null = $state(null);
 
 	const targetSizeInfo = anchor?.getBoundingClientRect();
 
@@ -200,8 +200,8 @@
 	const generatePosition = () => {
 		const mySizeInfo = ref?.getBoundingClientRect();
 
-		const myWidth = mySizeInfo.width;
-		const myHeight = mySizeInfo.height;
+		const myWidth = mySizeInfo?.width;
+		const myHeight = mySizeInfo?.height;
 		const windowWidth = browser ? window.innerWidth : 0;
 		const windowHeight = browser ? window.innerHeight : 0;
 
@@ -288,7 +288,7 @@
 <style>
 	.target-div {
 		position: fixed;
-		z-index: 5;
+		z-index: 10;
 		min-height: fit-content;
 	}
 </style>

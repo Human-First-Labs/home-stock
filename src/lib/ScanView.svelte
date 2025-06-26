@@ -1,12 +1,10 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
 	import type { ActionedInfoLine, ReceiptLineType } from './api/receipt-service';
 	import ScanLineCard from './ScanLineCard.svelte';
 	import Spinner from './toolkit/svgs/Spinner.svelte';
 	import { fade } from 'svelte/transition';
 	import ScanLineForm from './ScanLineForm.svelte';
 	import type { Item } from './api/types';
-	import { goto } from '$app/navigation';
 
 	export interface ScanViewProps {
 		scan: {
@@ -15,7 +13,9 @@
 		};
 		cancelScan: () => Promise<void>;
 		bulkConfirmFunc: () => Promise<void>;
-		createItem: (data: { title: string; warningAmount: number; quantity: number }) => Promise<Item>;
+		createItem: (data: { title: string; warningAmount: number; quantity: number }) => Promise<{
+			item: Item;
+		}>;
 		confirmLine: (
 			id: string,
 			data: {
@@ -81,6 +81,7 @@
 		<ScanLineForm
 			{confirmLine}
 			{createItem}
+			scanId={scan.id}
 			bind:showForm={formShow}
 			bind:line={actionLine}
 			{items}
@@ -97,7 +98,7 @@
 				<button
 					class="basic-button"
 					onclick={() => {
-						//TODO run function here
+						bulkConfirm = true;
 					}}
 					disabled={detectedActionLines === 0 || pendingLines.length === 0}
 				>

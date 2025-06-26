@@ -4,27 +4,22 @@ export const clickOutside = (
 	element: Node,
 	args: {
 		callbackFunction: () => void;
-		skipFirst?: boolean;
 	}
 ) => {
-	const { callbackFunction, skipFirst } = args;
-
-	let initialClick = skipFirst;
+	let { callbackFunction } = args;
 
 	const onClick: (this: HTMLElement, ev: MouseEvent) => unknown = (event) => {
-		if (initialClick) {
-			initialClick = false;
-			return;
-		}
-		if (!element.contains(event.target as Node)) {
+		// Trigger the callback if the click is outside the element
+		if (event.target instanceof Node && !element.contains(event.target)) {
 			callbackFunction();
 		}
 	};
 
+	// Attach the event listener when the action is mounted
 	onMount(() => {
-		document.body.addEventListener('click', onClick);
+		document.body.addEventListener('click', onClick, true); // Use capture phase to ensure proper event handling
 		return () => {
-			document.body.removeEventListener('click', onClick);
+			document.body.removeEventListener('click', onClick, true);
 		};
 	});
 };

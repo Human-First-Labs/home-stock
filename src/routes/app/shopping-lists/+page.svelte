@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Spinner from '$lib/toolkit/svgs/Spinner.svelte';
-	import { fade, slide } from 'svelte/transition';
-	import ItemCard from '$lib/ItemCard.svelte';
+	import { fade } from 'svelte/transition';
 	import type { ShoppingList } from '$lib/api/types';
 	import type { PageProps } from './$types';
 	import ShoppingListCard from '$lib/ShoppingListCard.svelte';
@@ -46,6 +45,9 @@
 				Generate New Shopping List
 			{/if}
 		</button>
+		{#if generateError}
+			<small class="error-message">{generateError}</small>
+		{/if}
 	</div>
 	<p>Browse and create new Shopping Lists here.</p>
 	{#if data.shoppingLists && data.shoppingLists.length > 0}

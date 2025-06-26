@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import TargetDiv from './TargetDiv.svelte';
-	import { slide } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import { clickOutside } from './actions';
 	import { convertMalteseFonts } from './utils';
 
@@ -109,11 +109,7 @@
 	</div>
 	{#if openDropdown && ref}
 		<TargetDiv anchor={ref} matchParentWidth="exact" preferredPosition="bottom-start">
-			<div
-				class="card column"
-				in:slide={{ axis: 'y', duration: 300 }}
-				out:slide={{ axis: 'y', duration: 300 }}
-			>
+			<div class="card column" in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}>
 				<div class="row basic-input">
 					<input class="hidden-input" bind:value={query} placeholder="Search" />
 					{#if query}

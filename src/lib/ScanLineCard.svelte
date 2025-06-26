@@ -62,16 +62,20 @@
 			{/if}
 		{/if}
 		<hr class="basic-hr" />
-		{#if currentAction === 'add-to-item'}
-			<p>
-				On Confirm, quantiy is added to item "<strong
-					>{scanLine.actionableInfo.existingItemTitle}</strong
-				>"
-			</p>
-		{:else if currentAction === 'ignore'}
-			<p>On Confirm, line is skipped</p>
+		{#if confirmAction}
+			{#if currentAction === 'add-to-item'}
+				<p>
+					On Confirm, quantiy is added to item "<strong
+						>{scanLine.actionableInfo.existingItemTitle}</strong
+					>"
+				</p>
+			{:else if currentAction === 'ignore'}
+				<p>On Confirm, line is skipped</p>
+			{:else}
+				<p>Cannot Confirm, no action detected</p>
+			{/if}
 		{:else}
-			<p>Cannot Confirm, no action detected</p>
+			<p>Test</p>
 		{/if}
 	</div>
 	{#if scanLine.status === 'PENDING' && confirmAction}
