@@ -65,7 +65,7 @@
 		{#if confirmAction}
 			{#if currentAction === 'add-to-item'}
 				<p>
-					On Confirm, quantiy is added to item "<strong
+					On Confirm, quantity is added to item "<strong
 						>{scanLine.actionableInfo.existingItemTitle}</strong
 					>"
 				</p>
@@ -74,8 +74,12 @@
 			{:else}
 				<p>Cannot Confirm, no action detected</p>
 			{/if}
-		{:else}
-			<p>Test</p>
+		{:else if currentAction === 'add-to-item'}
+			<p>
+				Quantity added to item "<strong>{scanLine.actionableInfo.existingItemTitle}</strong>"
+			</p>
+		{:else if currentAction === 'ignore'}
+			<p>Line skipped</p>
 		{/if}
 	</div>
 	{#if scanLine.status === 'PENDING' && confirmAction}

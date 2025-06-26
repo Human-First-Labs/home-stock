@@ -53,29 +53,33 @@ export const receiptService = (fetch: Fetch) => {
             }>
         },
         confirmReceipt: async (id: string) => {
-            return (await fetch(PUBLIC_API_URL + '/confirm/receipt/' + id, {
+            const result = await (await fetch(PUBLIC_API_URL + '/confirm/receipt/' + id, {
                 'method': 'PATCH',
             })).json() as Promise<{
                 unconfirmedLines: ReceiptLineType[]
             } | undefined>
+
+            return Object.keys(result).length > 0 ? result : undefined;
         },
         confirmReceiptLine: async (scanId: string, data: {
             actionedInfo: ActionedInfoLine,
             line: ReceiptLineType
         }) => {
-            return (await fetch(PUBLIC_API_URL + '/confirm/receipt/line/' + scanId, {
+            const result = await (await fetch(PUBLIC_API_URL + '/confirm/receipt/line/' + scanId, {
                 'method': 'PATCH',
                 body: JSON.stringify(data)
             })).json() as Promise<{
                 unconfirmedLines: ReceiptLineType[]
             } | undefined>
+
+            return Object.keys(result).length > 0 ? result : undefined;
         },
         getMonthScanNumber: async () => {
             return (await fetch(PUBLIC_API_URL + '/get/month-scan-number', {
                 'method': 'GET',
             })).json() as Promise<{
                 number: number
-            } | undefined>
+            }>
         }
     }
 
