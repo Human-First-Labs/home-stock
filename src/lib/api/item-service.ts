@@ -71,7 +71,7 @@ export const itemService = (fetch: Fetch) => {
             return (await fetch(PUBLIC_API_URL + '/generate/shopping-list', {
                 'method': 'POST'
             })).json() as Promise<{
-                shoppingList: Item[] | undefined
+                shoppingList: ShoppingList
             }>
         },
         getItems: async () => {
