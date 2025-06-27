@@ -18,7 +18,7 @@
 		}
 	};
 
-	//TODO here would be the offline check once it is implemented
+	//TODO change this to check for supabase state and user, so we can show appropriate error when its API issue
 </script>
 
 <SupabaseLayout {session} {supabase}>
