@@ -2,6 +2,10 @@
 	import { inView } from '$lib/toolkit/actions/onInView.svelte';
 	import { onMount } from 'svelte';
 	import { fly, slide } from 'svelte/transition';
+	import type { PageProps } from './$types';
+	import Spinner from '$lib/toolkit/svgs/Spinner.svelte';
+
+	const { data }: PageProps = $props();
 
 	let expandedFeature = $state<string>('');
 
@@ -16,7 +20,20 @@
 	let ready2 = $state(false);
 	let ready3 = $state(false);
 
-	onMount(() => (ready1 = true));
+	let apiReady = $state(false);
+
+	const apiCheck = async () => {
+		try {
+			await data.checkActive();
+			apiReady = true;
+		} catch (e) {}
+	};
+
+	onMount(() => {
+		ready1 = true;
+
+		apiCheck();
+	});
 
 	const currentFeatures: Feature[] = [
 		{
@@ -108,7 +125,12 @@
 						Know what you have at home, and always buy just what you need
 					</h3>
 					<a class="basic-a" href="/app">
-						<button class="basic-button bigger-button"> Get started </button>
+						<button class="basic-button bigger-button" disabled={!apiReady}>
+							Get started
+							{#if !apiReady}
+								<Spinner />
+							{/if}
+						</button>
 					</a>
 				</div>
 				<div class="column half-2">

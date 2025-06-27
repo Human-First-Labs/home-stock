@@ -2,6 +2,7 @@ import { browser } from '$app/environment';
 import { itemService } from './item-service';
 import { receiptService } from './receipt-service';
 import { userService } from './user-service';
+import { utilityService } from './utility-service';
 
 export type SvelteFetch = {
 	(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
@@ -44,6 +45,7 @@ export const getSDK = (fetch: SvelteFetch, token: string) => {
 	}
 
 	return {
+		utilities: utilityService(updatedFetch),
 		users: userService(updatedFetch),
 		items: itemService(updatedFetch),
 		receipt: receiptService(updatedFetch)

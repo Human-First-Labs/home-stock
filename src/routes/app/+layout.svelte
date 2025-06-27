@@ -23,12 +23,16 @@
 
 <SupabaseLayout {session} {supabase}>
 	<div class="column content" style="gap: 20px">
-		{#if !user}
+		{#if !session}
 			<SupabaseLogin {supabase} code={page.url.searchParams.get('code') || undefined} />
 		{:else}
 			<div class="section column">
 				<div class="section-content">
-					{@render children()}
+					{#if !user}
+						<p>Issue with loading API, give us a moment and try refreshing soon.</p>
+					{:else}
+						{@render children()}
+					{/if}
 					<hr class="basic-hr" />
 					<button
 						class="basic-button bigger"
