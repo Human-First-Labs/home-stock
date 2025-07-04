@@ -43,6 +43,9 @@
 				}
 			: undefined;
 	});
+	let lineConnectionError = $state('');
+	let lineQuantityError = $state('');
+	let lineMultiplierError = $state('');
 	let lineSaveLoading = $state(false);
 
 	let showItemForm = $state(false);
@@ -54,10 +57,24 @@
 	const confirmLineFunc = async () => {
 		let stop = false;
 		if (!line.actionableInfo.existingItemId && !line.actionableInfo.ignore) {
-			generalLineError = 'Please select an Item or choose to ignore this line.';
+			lineConnectionError = 'Please select an Item or choose to ignore this line.';
 			stop = true;
 		} else {
-			generalLineError = '';
+			lineConnectionError = '';
+		}
+
+		if (line.actionableInfo.quantityChange < 0) {
+			lineQuantityError = 'Quantity cannot be negative.';
+			stop = true;
+		} else {
+			lineQuantityError = '';
+		}
+
+		if (line.actionableInfo.quantityMultiplier < 1) {
+			lineMultiplierError = 'Quantity multiplier must be at least 1.';
+			stop = true;
+		} else {
+			lineMultiplierError = '';
 		}
 
 		if (stop) {
@@ -69,7 +86,9 @@
 			await confirmLine(scanId, {
 				actionedInfo: {
 					itemId: line.actionableInfo.existingItemId,
-					ignore: line.actionableInfo.ignore
+					ignore: line.actionableInfo.ignore,
+					quantityChange: line.actionableInfo.quantityChange,
+					quantityMultiplier: line.actionableInfo.quantityMultiplier || 1
 				},
 				line
 			});
@@ -94,6 +113,7 @@
 	<div class="row btn-row">
 		<h2>Scan Line Action Information</h2>
 	</div>
+	<h5>Handling Scan Line: {line.title}</h5>
 	<p>
 		Here you will decide what to do with the scan line. This information is kept for when this scan
 		line is encountered again in the future, and this action will be detected automatically.
@@ -116,7 +136,7 @@
 		</div>
 		{#if !line.actionableInfo.ignore}
 			<div class="column">
-				<label for="item-selection"> Linked Item </label>
+				<label for="item-selection">Linked Item</label>
 				<AutocompleteField
 					id="item-selection"
 					name="Item Selection"
@@ -140,32 +160,83 @@
 					}}
 				/>
 			</div>
-		{:else}
-			<p>Line will be ignored</p>
+		{/if}
+		{#if lineConnectionError}
+			<small class="error-message">{lineConnectionError}</small>
 		{/if}
 	</div>
-	<div class="row btn-row">
-		<button
-			class="basic-button"
-			onclick={() => {
-				showForm = false;
-				generalLineError = '';
-			}}
-		>
-			Cancel
-		</button>
-		<button class="basic-button" onclick={confirmLineFunc}>
-			{#if lineSaveLoading}
-				<Spinner />
-			{:else}
-				Save
-			{/if}
-		</button>
-	</div>
-	{#if generalLineError}
-		<small class="error-message">{generalLineError}</small>
+	{#if !line.actionableInfo.ignore}
+		{#if line.actionableInfo.existingItemId}
+			<div class="row form-row">
+				<div class="column field-column">
+					<div class="column">
+						<label for="item-quantity">Quantity</label>
+						<small
+							>This is the quantity of items you have bought, detected by the scan, but can be
+							overwritten.</small
+						>
+					</div>
+					<input
+						id="item-quantity"
+						type="number"
+						class="basic-input"
+						min="0"
+						bind:value={line.actionableInfo.quantityChange}
+						placeholder="Items Bought"
+					/>
+					{#if lineQuantityError}
+						<small class="error-message">{lineQuantityError}</small>
+					{/if}
+				</div>
+				<div class="column field-column">
+					<div class="column">
+						<label for="item-quantity">Quantity Multiplier</label>
+						<small>
+							This is the multiplier for the quantity of items you have bought. Examples: Eggs, 6
+							per pack, bought 2 packs, set multiplier to 6 to get a total of 12 eggs.
+						</small>
+					</div>
+					<input
+						id="item-quantity-multiplier"
+						type="number"
+						class="basic-input"
+						min="1"
+						bind:value={line.actionableInfo.quantityMultiplier}
+						placeholder="Quantity Multiplier"
+					/>
+					{#if lineMultiplierError}
+						<small class="error-message">{lineMultiplierError}</small>
+					{/if}
+				</div>
+			</div>
+		{:else}
+			<p>Please select an item or ignore this line from above</p>
+		{/if}
+	{:else}
+		<p>Line will be ignored</p>
 	{/if}
 </div>
+<div class="row btn-row">
+	<button
+		class="basic-button"
+		onclick={() => {
+			showForm = false;
+			generalLineError = '';
+		}}
+	>
+		Cancel
+	</button>
+	<button class="basic-button" onclick={confirmLineFunc}>
+		{#if lineSaveLoading}
+			<Spinner />
+		{:else}
+			Save
+		{/if}
+	</button>
+</div>
+{#if generalLineError}
+	<small class="error-message">{generalLineError}</small>
+{/if}
 
 {#if showItemForm}
 	<div class="cover">
@@ -190,6 +261,7 @@
 					line.actionableInfo.existingItemId = result.item.id;
 					line.actionableInfo.existingItemTitle = result.item.title;
 				}}
+				midScan={true}
 			/>
 		</div>
 	</div>
@@ -199,6 +271,13 @@
 	.form-row {
 		display: flex;
 		gap: 20px;
+		flex: 1;
+	}
+
+	.field-column {
+		flex: 1;
+		min-width: 150px;
+		justify-content: space-between;
 	}
 
 	.btn-row {

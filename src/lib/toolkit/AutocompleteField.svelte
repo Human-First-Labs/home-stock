@@ -98,6 +98,7 @@
 					class="hidden-button"
 					onclick={() => {
 						value = undefined;
+						onselect && onselect(undefined as any);
 					}}
 					style="flex: 1"
 					type="button"

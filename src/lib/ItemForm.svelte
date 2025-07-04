@@ -13,6 +13,7 @@
 			data: { title: string; warningAmount: number; quantity: number }
 		) => Promise<void>;
 		createItem: (data: { title: string; warningAmount: number; quantity: number }) => Promise<void>;
+		midScan?: boolean;
 	}
 
 	let {
@@ -22,7 +23,8 @@
 		itemWarningAmount = $bindable(),
 		itemQuantity = $bindable(),
 		createItem,
-		updateItem
+		updateItem,
+		midScan
 	}: ItemFormProps = $props();
 
 	let itemSaveLoading = $state(false);
@@ -38,7 +40,7 @@
 		} else {
 			titleError = '';
 		}
-		if (!itemQuantity || parseInt(itemQuantity) < 0) {
+		if (itemQuantity === undefined || itemQuantity === '') {
 			quantityError = 'Please enter a valid quantity';
 			stop = true;
 		} else {
@@ -125,6 +127,12 @@
 					style="flex: 1; "
 				/>
 			</div>
+			{#if midScan}
+				<small
+					>This quantity should be the current amount you have in stock, EXCLUDING the quantity that
+					will be added by the current scan.</small
+				>
+			{/if}
 			{#if quantityError}
 				<small class="error-message">{quantityError}</small>
 			{/if}
