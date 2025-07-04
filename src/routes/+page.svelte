@@ -124,14 +124,23 @@
 					<h3 class="contrast-text">
 						Know what you have at home, and always buy just what you need
 					</h3>
-					<a class="basic-a" href="/app">
-						<button class="basic-button bigger-button" disabled={!apiReady}>
-							Get started
-							{#if !apiReady}
+					{#if !apiReady}
+						<button class="basic-button bigger-button" disabled={true}>
+							<div class="row" style="gap: 20px;">
+								<p>Get started</p>
 								<Spinner />
-							{/if}
+							</div>
 						</button>
-					</a>
+						<small class="contrast-text">Sorry for the delay, the API takes a while to load!</small>
+					{:else}
+						<a class="basic-a" href="/app" style="gap: 10px;">
+							<button class="basic-button bigger-button">
+								<div class="row" style="gap: 20px;">
+									<p>Get started</p>
+								</div>
+							</button>
+						</a>
+					{/if}
 				</div>
 				<div class="column half-2">
 					<!-- <img src="/placeholder-image.jpg" alt="Shopping App" /> -->

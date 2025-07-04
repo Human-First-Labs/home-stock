@@ -4,6 +4,8 @@ import { PUBLIC_API_URL } from '$env/static/public';
 export interface ActionedInfoLine {
     itemId?: string
     ignore?: boolean
+    quantityMultiplier: number
+    quantityChange: number
 }
 
 export interface ReceiptLineType {
@@ -18,7 +20,8 @@ export interface ReceiptLineType {
         existingItemTitle?: string
         existingItemId?: string
         ignore?: boolean
-        quantityChange?: number
+        quantityChange: number
+        quantityMultiplier: number
     }
 }
 
