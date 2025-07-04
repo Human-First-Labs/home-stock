@@ -16,7 +16,12 @@ export const load = async ({ data, depends, fetch }) => {
         supabaseUrl: PUBLIC_SUPABASE_URL
     });
 
-    const apiSDK = getSDK(fetch, data.session?.access_token || '')
+    const apiSDK = getSDK(fetch, {
+        cookies: data.cookies,
+        fetch,
+        supabaseApiKey: PUBLIC_SUPABASE_API_KEY,
+        supabaseUrl: PUBLIC_SUPABASE_URL
+    })
 
     let user
 
@@ -36,6 +41,7 @@ export const load = async ({ data, depends, fetch }) => {
     return {
         user,
         supabaseData: supabaseLayoutLoad,
+        apiSDK
     };
 };
 

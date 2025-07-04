@@ -1,8 +1,7 @@
 import { isBrowser, createBrowserClient, createServerClient } from '@supabase/ssr';
-import { type Handle, type HandleFetch } from '@sveltejs/kit';
-import { PUBLIC_SUPABASE_API_KEY } from '$env/static/public'
+import { type Handle } from '@sveltejs/kit';
 
-interface DataArguments {
+export interface DataArguments {
 	fetch: {
 		(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 		(input: string | URL | globalThis.Request, init?: RequestInit): Promise<Response>;
@@ -15,12 +14,10 @@ interface DataArguments {
 	}[];
 }
 
-export const layoutLoad = async (args: DataArguments) => {
+export const getSupabaseInstance = (args: DataArguments) => {
 	const { fetch, cookies, supabaseUrl, supabaseApiKey } = args;
 
-
-
-	const supabase = isBrowser()
+	return isBrowser()
 		? createBrowserClient(supabaseUrl, supabaseApiKey, {
 			global: {
 				fetch
@@ -41,6 +38,17 @@ export const layoutLoad = async (args: DataArguments) => {
 				}
 			}
 		});
+}
+
+export const layoutLoad = async (args: DataArguments) => {
+	const { fetch, cookies, supabaseUrl, supabaseApiKey } = args;
+
+	const supabase = getSupabaseInstance({
+		fetch,
+		cookies,
+		supabaseUrl,
+		supabaseApiKey
+	})
 
 	/**
 	 * It's fine to use `getSession` here, because on the client, `getSession` is
@@ -141,17 +149,17 @@ export const generateSupabaseHandler = (args: { supabaseUrl: string; supabaseKey
 	};
 };
 
-export const tokenFetchHandle: HandleFetch = async ({ request, fetch, event }) => {
-	const { session } = await event.locals.safeGetSession();
+// export const tokenFetchHandle: HandleFetch = async ({ request, fetch, event }) => {
+// 	const { session } = await event.locals.safeGetSession();
 
-	const newHeaders = new Headers(request.headers);
+// 	const newHeaders = new Headers(request.headers);
 
-	newHeaders.append('authorization', `Bearer ${session ? session.access_token : PUBLIC_SUPABASE_API_KEY}`);
+// 	newHeaders.append('authorization', `Bearer ${session ? session.access_token : PUBLIC_SUPABASE_API_KEY}`);
 
-	const newRequest = new Request(request.url, {
-		...request,
-		headers: newHeaders
-	});
+// 	const newRequest = new Request(request.url, {
+// 		...request,
+// 		headers: newHeaders
+// 	});
 
-	return fetch(newRequest);
-};
+// 	return fetch(newRequest);
+// };

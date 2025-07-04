@@ -32,7 +32,11 @@
 				generateLoading = true;
 				generateError = null;
 				try {
-					await data.generateShoppingList();
+					const result = await data.generateShoppingList();
+
+					if (!result.shoppingList) {
+						generateError = "No items found to generate a shopping list. You're all good!";
+					}
 				} catch (error) {
 					generateError = error instanceof Error ? error.message : 'An unknown error occurred';
 				}

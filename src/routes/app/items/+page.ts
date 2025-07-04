@@ -1,8 +1,7 @@
 import { invalidate } from "$app/navigation";
-import { getSDK } from "$lib/api";
 
-export const load = async ({ data, depends, fetch }) => {
-    const apiSDK = getSDK(fetch, data.session?.access_token || '')
+export const load = async ({ depends, parent }) => {
+    const { apiSDK } = await parent();
 
     let items
 
