@@ -179,6 +179,20 @@
 				Are you sure you want to confirm all pending lines? This will mark them as completed, add
 				any quantities to existing items and ignore any lines that are set to be ignored.
 			</p>
+			<p>The following is a quick summary of quantity changes:</p>
+			<ul>
+				{#each pendingLines as line (line.title)}
+					{#if line.actionableInfo.existingItemId && !line.actionableInfo.ignore}
+						<li>
+							{line.title}: +{line.actionableInfo.quantityChange *
+								line.actionableInfo.quantityMultiplier} to{' '}
+							{line.actionableInfo.existingItemTitle}
+						</li>
+					{:else if line.actionableInfo.ignore}
+						<li>{line.title}: Ignored</li>
+					{/if}
+				{/each}
+			</ul>
 			<div class="btn-row">
 				<button
 					class="basic-button"

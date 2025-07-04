@@ -1,9 +1,8 @@
 import { invalidate } from "$app/navigation";
-import { getSDK } from "$lib/api";
 import type { ActionedInfoLine, ReceiptLineType } from "$lib/api/receipt-service";
 
-export const load = async ({ data, fetch, depends }) => {
-    const apiSDK = getSDK(fetch, data.session?.access_token || '')
+export const load = async ({ depends, parent }) => {
+    const { apiSDK } = await parent();
 
     depends('app:currentScan');
 
@@ -11,34 +10,32 @@ export const load = async ({ data, fetch, depends }) => {
     let scanNumbers
     let items
 
-    if (data.session) {
-        try {
-            const result = await apiSDK.receipt.getCurrentLines()
+    try {
+        const result = await apiSDK.receipt.getCurrentLines()
 
-            currentScan = result;
+        currentScan = result;
 
-        } catch (e) {
-            console.error(e)
-        }
+    } catch (e) {
+        console.error(e)
+    }
 
-        try {
-            const result = await apiSDK.receipt.getMonthScanNumber()
+    try {
+        const result = await apiSDK.receipt.getMonthScanNumber()
 
 
-            scanNumbers = result;
+        scanNumbers = result;
 
-        } catch (e) {
-            console.error(e)
-        }
+    } catch (e) {
+        console.error(e)
+    }
 
-        try {
-            const result = await apiSDK.items.getItems()
+    try {
+        const result = await apiSDK.items.getItems()
 
-            items = result.items;
+        items = result.items;
 
-        } catch (e) {
-            console.error(e)
-        }
+    } catch (e) {
+        console.error(e)
     }
 
     const uploadScan = async (base64: string, extension: string) => {

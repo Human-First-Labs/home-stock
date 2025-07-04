@@ -3,15 +3,26 @@ import { itemService } from './item-service';
 import { receiptService } from './receipt-service';
 import { userService } from './user-service';
 import { utilityService } from './utility-service';
+import { getSupabaseInstance, type DataArguments } from '$lib/supabase/util';
 
 export type SvelteFetch = {
 	(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 	(input: string | URL | globalThis.Request, init?: RequestInit): Promise<Response>;
 };
 
-export const getSDK = (fetch: SvelteFetch, token: string) => {
+export const getSDK = (fetch: SvelteFetch, data?: DataArguments) => {
 	const updatedFetch: SvelteFetch = async (url, request) => {
+
+		let token = ''
+		if (data) {
+			const supabase = getSupabaseInstance(data)
+
+			const session = await supabase.auth.getSession()
+			token = session.data.session?.access_token || '';
+		}
+
 		if (browser) {
+
 			const newRequest = new Request(url, request);
 			try {
 				return fetch(url, {

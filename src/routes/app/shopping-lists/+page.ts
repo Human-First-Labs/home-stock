@@ -1,8 +1,7 @@
 import { invalidate } from "$app/navigation";
-import { getSDK } from "$lib/api";
 
-export const load = async ({ data, depends, fetch }) => {
-    const apiSDK = getSDK(fetch, data.session?.access_token || '')
+export const load = async ({ depends, parent }) => {
+    const { apiSDK } = await parent();
 
     let shoppingLists
 
@@ -15,9 +14,10 @@ export const load = async ({ data, depends, fetch }) => {
     }
 
     const generateShoppingList = async () => {
-        await apiSDK.items.generateShoppingList()
+        const result = await apiSDK.items.generateShoppingList()
 
         invalidate('app:shopping-lists');
+        return result
     };
 
     const deleteShoppingList = async (id: string) => {

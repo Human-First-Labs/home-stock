@@ -1,7 +1,5 @@
-import { getSDK } from "$lib/api";
-
-export const load = async ({ data, fetch, url }) => {
-    const apiSDK = getSDK(fetch, data.session?.access_token || '')
+export const load = async ({ url, parent }) => {
+    const { apiSDK } = await parent();
     const id = url.pathname.split('/').pop();
 
     if (!id) {

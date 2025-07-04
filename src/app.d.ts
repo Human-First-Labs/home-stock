@@ -12,9 +12,9 @@ declare global {
       safeGetSession: () => Promise<{ session: Session | null; user: User | null }>
       websocket?: Socket
     }
-    interface PageData {
-      session: Session | null
-    }
+    // interface PageData {
+    //   session: Session | null
+    // }
     // interface PageState {}
     // interface Platform {}
   }
